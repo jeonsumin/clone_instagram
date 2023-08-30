@@ -8,10 +8,24 @@
 import UIKit
 import Firebase
 
-class MainTabBarController: UITabBarController{
+class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        let index = viewControllers?.index(of: viewController)
+        if index == 2 {
+            let layout = UICollectionViewFlowLayout()
+            let photoSelectContoller = PhotoSelectorController(collectionViewLayout: layout)
+            let navController = UINavigationController(rootViewController: photoSelectContoller)
+            navController.modalPresentationStyle = .fullScreen
+            present(navController, animated: true)
+            return false
+        }
+        return true
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
+        self.delegate = self
         
         if Auth.auth().currentUser == nil {
             DispatchQueue.main.async {
@@ -29,21 +43,21 @@ class MainTabBarController: UITabBarController{
     }
     func setupViewControllers(){
         
-        //home
+        // 홈 탭
         let homeNavController = templateNavController(unselectedImage: UIImage(named: "home_unselected")!,
                                                       selectedImage: UIImage(named: "home_selected")!)
-        //search
+        // 검색 탭
         let searchNavController = templateNavController(unselectedImage: UIImage(named: "search_unselected")!,
                                                         selectedImage: UIImage(named: "search_selected")!)
         
-        //plus
+        // 사진추가 탭
         let plusNavController = templateNavController(unselectedImage: UIImage(named: "plus_unselected")!,
                                                       selectedImage: UIImage(named: "plus_unselected")!)
-        
+        // 좋아요 탭
         let likeNavController = templateNavController(unselectedImage: UIImage(named: "like_unselected")!,
                                                       selectedImage: UIImage(named: "like_selected")!)
         
-        //user Profile
+        // 프로필 탭
         let userProfileNavController = templateNavController(unselectedImage: UIImage(named:"profile_unselected")!,
                                                              selectedImage: UIImage(named:"profile_selected")!,
                                                              rootViewController: UserProfileController(collectionViewLayout: UICollectionViewFlowLayout()))
