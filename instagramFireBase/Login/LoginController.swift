@@ -61,11 +61,11 @@ class LoginController: UIViewController {
         
         view.addSubview(signUpButton)
         signUpButton.anchor(
-            top: nil,
-            left: view.leftAnchor,
-            bottom: view.bottomAnchor,
-            right: view.rightAnchor,
-            paddingTop: 0,
+            top: loginButton.bottomAnchor,
+            left: loginButton.leftAnchor,
+            bottom: nil,
+            right: loginButton.rightAnchor,
+            paddingTop: 10,
             paddingLeft: 0,
             paddingBotton: 0,
             paddingRight: 0,
@@ -75,19 +75,20 @@ class LoginController: UIViewController {
         
     }
     func setupinputFields(){
-        let stackView = UIStackView(arrangedSubviews: [logoImageView,emailTextField,passwordTextField,loginButton])
+        let stackView = UIStackView(arrangedSubviews: [emailTextField,passwordTextField,loginButton])
         view.addSubview(stackView)
+        view.addSubview(logoImageView)
         stackView.axis = .vertical
         stackView.spacing = 10
-//        stackView.distribution = .fillProportionally
+        stackView.distribution = .fillEqually
         logoImageView.anchor(
             top: nil,
-            left: nil,
-            bottom: nil,
-            right: nil,
+            left: stackView.leftAnchor,
+            bottom: stackView.topAnchor,
+            right: stackView.rightAnchor,
             paddingTop: 0,
             paddingLeft: 0,
-            paddingBotton: 0,
+            paddingBotton: -10,
             paddingRight: 0,
             width: 200,
             height: 143)
@@ -101,7 +102,7 @@ class LoginController: UIViewController {
             paddingBotton: 0,
             paddingRight: 40,
             width: 0,
-            height: 0
+            height: 150
         )
         stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
