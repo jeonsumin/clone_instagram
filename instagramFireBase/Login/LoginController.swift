@@ -2,10 +2,11 @@
 //  LoginController.swift
 //  instagramFireBase
 //
-//  Created by deepvisions on 2023/08/30.
+//  Created by Terry on 2023/08/30.
 //
 
 import UIKit
+import Firebase
 
 class LoginController: UIViewController {
     
@@ -23,15 +24,18 @@ class LoginController: UIViewController {
         tf.backgroundColor = UIColor(white: 0, alpha: 0.03)
         tf.borderStyle = .roundedRect
         tf.font = UIFont.systemFont(ofSize: 14)
+        tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         return tf
     }()
 
     let passwordTextField: UITextField = {
         let tf = UITextField()
-        tf.placeholder = "password"
+        tf.placeholder = "Password"
         tf.backgroundColor = UIColor(white: 0, alpha: 0.03)
         tf.borderStyle = .roundedRect
         tf.font = UIFont.systemFont(ofSize: 14)
+        tf.isSecureTextEntry = true
+        tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         return tf
     }()
     let loginButton: UIButton = {
@@ -41,7 +45,8 @@ class LoginController: UIViewController {
         button.layer.cornerRadius = 5
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.setTitleColor(.white, for: .normal)
-//        button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
+        button.isEnabled = false
+        button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
         return button
     }()
     
@@ -113,5 +118,38 @@ class LoginController: UIViewController {
         let signUpController = SignupController()
         navigationController?.pushViewController(signUpController, animated: true)
         
+    }
+    
+    @objc func handleLogin(){
+        guard let email = emailTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        
+        Auth.auth().signIn(withEmail: email, password: password) { user, error in
+            if let error = error {
+                print("Failed To sign n with Email", email)
+                return
+            }
+            
+            print("Successfully logged back in with user: ", user?.user.uid ?? "" )
+            
+            //appDelegate의 window를 가져온다
+            guard let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else { return }
+            
+            mainTabBarController.setupViewControllers()
+            self.dismiss(animated: true)
+        }
+    }
+    
+    @objc func handleTextInputChange(){
+        let isFormValid = emailTextField.text?.count ?? 0 > 0 &&
+        passwordTextField.text?.count ?? 0 > 0
+        
+        if isFormValid {
+            loginButton.isEnabled = true
+            loginButton.backgroundColor = UIColor.rgb(red: 17, green: 154, blue: 237)
+        } else {
+            loginButton.isEnabled = false
+            loginButton.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
+        }
     }
 }

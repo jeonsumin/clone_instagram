@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  instagramFireBase
 //
-//  Created by deepvisions on 2023/08/29.
+//  Created by Terry on 2023/08/29.
 //
 
 import UIKit
@@ -23,6 +23,7 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         tf.backgroundColor = UIColor(white: 0, alpha: 0.03)
         tf.borderStyle = .roundedRect
         tf.font = UIFont.systemFont(ofSize: 14)
+        tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         return tf
     }()
     let usernameTextField: UITextField = {
@@ -31,6 +32,7 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         tf.backgroundColor = UIColor(white: 0, alpha: 0.03)
         tf.borderStyle = .roundedRect
         tf.font = UIFont.systemFont(ofSize: 14)
+        tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         return tf
     }()
     let passwordTextField: UITextField = {
@@ -40,6 +42,7 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         tf.borderStyle = .roundedRect
         tf.font = UIFont.systemFont(ofSize: 14)
         tf.isSecureTextEntry = true
+        tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         return tf
     }()
     
@@ -47,6 +50,7 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         let button = UIButton(type: .system )
         button.setTitle("Sign Up", for: .normal)
         button.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
+        button.isEnabled = false
         button.layer.cornerRadius = 5
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.setTitleColor(.white, for: .normal)
@@ -146,6 +150,11 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
                             return
                         }
                         print("Successfully saved user info to db")
+                        
+                        guard let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else { return }
+                        
+                        mainTabBarController.setupViewControllers()
+                        self?.dismiss(animated: true)
                     }
 
                 }
@@ -156,6 +165,21 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         }
     
     }
+    
+    @objc func handleTextInputChange(){
+        let isFormValid = emailTextField.text?.count ?? 0 > 0 &&
+        passwordTextField.text?.count ?? 0 > 0 &&
+        usernameTextField.text?.count ?? 0 > 0
+        
+        if isFormValid {
+            signUpButton.isEnabled = true
+            signUpButton.backgroundColor = UIColor.rgb(red: 17, green: 154, blue: 237)
+        } else {
+            signUpButton.isEnabled = false
+            signUpButton.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
+        }
+    }
+    
     /**
      Firebase storage 이미지 업로드
      */

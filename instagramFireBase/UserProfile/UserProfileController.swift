@@ -2,7 +2,7 @@
 //  UserProfileController.swift
 //  instagramFireBase
 //
-//  Created by deepvisions on 2023/08/29.
+//  Created by Terry on 2023/08/29.
 //
 
 import UIKit
@@ -91,15 +91,19 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     }
     
     fileprivate func setupLogOutButton(){
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(handlLogout))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(handleLogout))
     }
     
-    @objc func handlLogout(){
+    @objc func handleLogout(){
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: "로그아웃", style: .destructive,handler: { _ in
             do {
                 try Auth.auth().signOut()
                 //로그아웃시 로그인 컨트롤러로 화면전환
+                let loginController = LoginController()
+                let navController = UINavigationController(rootViewController: loginController)
+                navController.modalPresentationStyle = .fullScreen
+                self.present(navController, animated: true)
                 
             }catch let signOutErr {
                 print("Failed to sign out : ", signOutErr)

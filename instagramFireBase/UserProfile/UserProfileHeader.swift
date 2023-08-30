@@ -2,7 +2,7 @@
 //  UserProfileHeader.swift
 //  instagramFireBase
 //
-//  Created by deepvisions on 2023/08/30.
+//  Created by Terry on 2023/08/30.
 //
 
 import UIKit
