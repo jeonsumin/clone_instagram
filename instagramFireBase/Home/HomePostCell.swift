@@ -2,7 +2,7 @@
 //  HomePostCell.swift
 //  instagramFireBase
 //
-//  Created by deepvisions on 2023/09/01.
+//  Created by terry on 2023/09/01.
 //
 
 import UIKit
@@ -12,6 +12,15 @@ class HomePostCell: UICollectionViewCell {
         didSet {
             guard let postImageUrl = post?.imageUrl else { return }
             photoImageView.loadImage(urlString: postImageUrl)
+            
+            usernameLabel.text = "TEST USERNAME"
+            usernameLabel.text = post?.user.username
+            
+            guard let profileImageUrl = post?.user.profileImageUrl else { return }
+            userProfileImageView.loadImage(urlString: profileImageUrl)
+            
+//            captionLabel.text = post?.cation
+            setupAttributedCaption()
         }
     }
     
@@ -72,13 +81,6 @@ class HomePostCell: UICollectionViewCell {
     
     let captionLabel: UILabel = {
         let label = UILabel()
-//        label.text = "SOMETHING FOR NOW"
-        let attributedText = NSMutableAttributedString(string: "Username ",attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14)])
-        attributedText.append(NSAttributedString(string: "여기에는 게시글이 바인딩되어요!",attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)]))
-        attributedText.append(NSAttributedString(string: "\n\n", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 4)]))
-        attributedText.append(NSAttributedString(string: "일주일 전",attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor : UIColor.gray]))
-    
-        label.attributedText = attributedText
         label.numberOfLines = 0
     
         return label
@@ -119,6 +121,18 @@ class HomePostCell: UICollectionViewCell {
         
         addSubview(captionLabel)
         captionLabel.anchor(top: likeButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBotton: 0, paddingRight: 8, width: 0, height: 0)
+    }
+    
+    fileprivate func setupAttributedCaption() {
+        guard let post = self.post else { return }
+        
+        
+        let attributedText = NSMutableAttributedString(string: post.user.username ,attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14)])
+        attributedText.append(NSAttributedString(string: " \(post.cation)",attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)]))
+        attributedText.append(NSAttributedString(string: "\n\n", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 4)]))
+        attributedText.append(NSAttributedString(string: "일주일 전",attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor : UIColor.gray]))
+    
+        self.captionLabel.attributedText = attributedText
     }
     
     fileprivate func setupActionButtons(){

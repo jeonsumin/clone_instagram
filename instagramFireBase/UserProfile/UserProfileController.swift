@@ -96,35 +96,18 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(handleLogout))
     }
     
-    fileprivate func fetchPosts(){
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        let ref = Database.database().reference().child("posts/\(uid)")
-        ref.observeSingleEvent(of: .value) { snapshot in
-            guard let dictionaries = snapshot.value as? [String:Any] else { return }
-            
-            dictionaries.forEach{ key, value in
-                
-                guard let dictionary = value as? [String: Any] else { return }
-                let post = Post(dictionary: dictionary)
-                self.posts.append(post)
-                
-            }
-            self.collectionView.reloadData()
-            
-        } withCancel: { error in
-            print("Faild to fetch posts : " ,error )
-        }
-
-    }
-    
     fileprivate func fetchOrderPosts() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let ref = Database.database().reference().child("posts/\(uid)")
         
-        ref.queryOrdered(byChild: "creationDate").observe(.childAdded) { snapshot in        
+        ref.queryOrdered(byChild: "creationDate").observe(.childAdded) { snapshot in
             guard let dictionary = snapshot.value as? [String:Any] else { return }
-            let post = Post(dictionary: dictionary)
-            self.posts.append(post)
+            
+            guard let user = self.user else { return }
+            let post = Post(user: user, dictionary: dictionary)
+//            let post = Post(dictionary: dictionary)
+            self.posts.insert(post,at:0)
+//            self.posts.append(post)
             
             self.collectionView.reloadData()
             
@@ -153,15 +136,5 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         }))
         alertController.addAction(UIAlertAction(title: "취소", style: .cancel))
         present(alertController, animated: true)
-    }
-}
-
-struct User{
-    let username: String
-    let profileImageUrl: String
-    
-    init(dictionary: [String: Any]) {
-        self.username = dictionary["username"] as? String ?? ""
-        self.profileImageUrl = dictionary["profileImageUrl"] as? String ?? ""
     }
 }

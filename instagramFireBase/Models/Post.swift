@@ -8,9 +8,13 @@
 import UIKit
 
 struct Post{
+    let user: User
     let imageUrl :String
+    let cation: String
     
-    init(dictionary: [String:Any]) {
-        self.imageUrl = dictionary["imageUrl"] as? String ?? "" 
+    init(user: User, dictionary: [String:Any]) {
+        self.user = user
+        self.imageUrl = dictionary["imageUrl"] as? String ?? ""
+        self.cation = dictionary["caption"] as? String ?? ""
     }
 }
