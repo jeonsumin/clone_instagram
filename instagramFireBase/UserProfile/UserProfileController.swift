@@ -12,6 +12,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     var user: User?
     let cellId = "cellId"
+    var posts = [Post]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,21 +25,21 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         
         //register 채택
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerId")
-        collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.register(UserProfilePhotoCell.self, forCellWithReuseIdentifier: cellId)
         
         setupLogOutButton()
-        
+        fetchPosts()
     }
     
     // 컬렉션 셀의 개수 설정
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 7
+        return posts.count
     }
     
     // 컬렉션 셀의 컨텐트 설정
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
-        cell.backgroundColor = .purple
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
+        cell.post = posts[indexPath.item]
         return cell
     }
     // top / bottom spacing 조정
@@ -92,6 +93,32 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     fileprivate func setupLogOutButton(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(handleLogout))
+    }
+    
+    fileprivate func fetchPosts(){
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let ref = Database.database().reference().child("posts/\(uid)")
+        ref.observeSingleEvent(of: .value) { snapshot in
+            guard let dictionaries = snapshot.value as? [String:Any] else { return }
+            
+            dictionaries.forEach{ key, value in
+                print("key : \(key) , value \(value)")
+                
+                guard let dictionary = value as? [String: Any] else { return }
+                let imageUrl = dictionary["imageUrl"] as? String
+                print("imageUrl \(imageUrl)")
+                
+                
+                let post = Post(dictionary: dictionary)
+                self.posts.append(post)
+                
+            }
+            self.collectionView.reloadData()
+            
+        } withCancel: { error in
+            print("Faild to fetch posts : " ,error )
+        }
+
     }
     
     @objc func handleLogout(){

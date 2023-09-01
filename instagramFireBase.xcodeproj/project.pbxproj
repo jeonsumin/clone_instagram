@@ -14,6 +14,8 @@
 		76C8025E2AA1638C00EF71C7 /* PhotoSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C8025D2AA1638C00EF71C7 /* PhotoSelectorCell.swift */; };
 		76C802602AA1687200EF71C7 /* PhotoSelectorHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C8025F2AA1687200EF71C7 /* PhotoSelectorHeader.swift */; };
 		76C802622AA16DBF00EF71C7 /* SharePhotoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802612AA16DBF00EF71C7 /* SharePhotoController.swift */; };
+		76C802652AA1A4FF00EF71C7 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802642AA1A4FF00EF71C7 /* Post.swift */; };
+		76C802672AA1B51800EF71C7 /* UserProfilePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802662AA1B51800EF71C7 /* UserProfilePhotoCell.swift */; };
 		76D289C22A9DB1920028F67B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C12A9DB1920028F67B /* AppDelegate.swift */; };
 		76D289C42A9DB1920028F67B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C32A9DB1920028F67B /* SceneDelegate.swift */; };
 		76D289C62A9DB1920028F67B /* SignupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C52A9DB1920028F67B /* SignupController.swift */; };
@@ -36,6 +38,8 @@
 		76C8025D2AA1638C00EF71C7 /* PhotoSelectorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorCell.swift; sourceTree = "<group>"; };
 		76C8025F2AA1687200EF71C7 /* PhotoSelectorHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorHeader.swift; sourceTree = "<group>"; };
 		76C802612AA16DBF00EF71C7 /* SharePhotoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePhotoController.swift; sourceTree = "<group>"; };
+		76C802642AA1A4FF00EF71C7 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		76C802662AA1B51800EF71C7 /* UserProfilePhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilePhotoCell.swift; sourceTree = "<group>"; };
 		76D289BE2A9DB1920028F67B /* instagramFireBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = instagramFireBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76D289C12A9DB1920028F67B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		76D289C32A9DB1920028F67B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +71,7 @@
 			children = (
 				764557AA2A9DDCFB0026769C /* UserProfileController.swift */,
 				7650E4D42A9EC7BB00EF906C /* UserProfileHeader.swift */,
+				76C802662AA1B51800EF71C7 /* UserProfilePhotoCell.swift */,
 			);
 			path = UserProfile;
 			sourceTree = "<group>";
@@ -78,6 +83,14 @@
 				76D289C52A9DB1920028F67B /* SignupController.swift */,
 			);
 			path = Login;
+			sourceTree = "<group>";
+		};
+		76C802632AA1A4EA00EF71C7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				76C802642AA1A4FF00EF71C7 /* Post.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		76D289B52A9DB1920028F67B = {
@@ -101,6 +114,7 @@
 		76D289C02A9DB1920028F67B /* instagramFireBase */ = {
 			isa = PBXGroup;
 			children = (
+				76C802632AA1A4EA00EF71C7 /* Models */,
 				76D289D52A9DB7CA0028F67B /* Utils */,
 				76D289C12A9DB1920028F67B /* AppDelegate.swift */,
 				76D289C32A9DB1920028F67B /* SceneDelegate.swift */,
@@ -296,12 +310,14 @@
 				7650E4D52A9EC7BB00EF906C /* UserProfileHeader.swift in Sources */,
 				76D289C22A9DB1920028F67B /* AppDelegate.swift in Sources */,
 				DE2EF0A72A9F823200A33132 /* PhotoSelectorController.swift in Sources */,
+				76C802652AA1A4FF00EF71C7 /* Post.swift in Sources */,
 				764557AB2A9DDCFB0026769C /* UserProfileController.swift in Sources */,
 				764557A92A9DDBF60026769C /* MainTabBarController.swift in Sources */,
 				76C802622AA16DBF00EF71C7 /* SharePhotoController.swift in Sources */,
 				76C802602AA1687200EF71C7 /* PhotoSelectorHeader.swift in Sources */,
 				7650E4D82A9F1A8800EF906C /* LoginController.swift in Sources */,
 				76D289C42A9DB1920028F67B /* SceneDelegate.swift in Sources */,
+				76C802672AA1B51800EF71C7 /* UserProfilePhotoCell.swift in Sources */,
 				76D289D72A9DB7D60028F67B /* Extension.swift in Sources */,
 				76C8025E2AA1638C00EF71C7 /* PhotoSelectorCell.swift in Sources */,
 			);

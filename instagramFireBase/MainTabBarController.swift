@@ -45,7 +45,8 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
         
         // 홈 탭
         let homeNavController = templateNavController(unselectedImage: UIImage(named: "home_unselected")!,
-                                                      selectedImage: UIImage(named: "home_selected")!)
+                                                      selectedImage: UIImage(named: "home_selected")!,
+                                                      rootViewController: UserProfileController(collectionViewLayout: UICollectionViewFlowLayout()))
         // 검색 탭
         let searchNavController = templateNavController(unselectedImage: UIImage(named: "search_unselected")!,
                                                         selectedImage: UIImage(named: "search_selected")!)
