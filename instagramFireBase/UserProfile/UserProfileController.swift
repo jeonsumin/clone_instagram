@@ -121,8 +121,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let ref = Database.database().reference().child("posts/\(uid)")
         
-        ref.queryOrdered(byChild: "creationDate").observe(.childAdded) { snapshot in
-            print()
+        ref.queryOrdered(byChild: "creationDate").observe(.childAdded) { snapshot in        
             guard let dictionary = snapshot.value as? [String:Any] else { return }
             let post = Post(dictionary: dictionary)
             self.posts.append(post)

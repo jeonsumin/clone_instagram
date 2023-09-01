@@ -17,6 +17,8 @@
 		76C802652AA1A4FF00EF71C7 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802642AA1A4FF00EF71C7 /* Post.swift */; };
 		76C802672AA1B51800EF71C7 /* UserProfilePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802662AA1B51800EF71C7 /* UserProfilePhotoCell.swift */; };
 		76C802692AA1B8DD00EF71C7 /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802682AA1B8DD00EF71C7 /* CustomImageView.swift */; };
+		76C8026D2AA1BD7300EF71C7 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C8026C2AA1BD7300EF71C7 /* HomeController.swift */; };
+		76C8026F2AA1BE5600EF71C7 /* HomePostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C8026E2AA1BE5600EF71C7 /* HomePostCell.swift */; };
 		76D289C22A9DB1920028F67B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C12A9DB1920028F67B /* AppDelegate.swift */; };
 		76D289C42A9DB1920028F67B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C32A9DB1920028F67B /* SceneDelegate.swift */; };
 		76D289C62A9DB1920028F67B /* SignupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C52A9DB1920028F67B /* SignupController.swift */; };
@@ -42,6 +44,8 @@
 		76C802642AA1A4FF00EF71C7 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		76C802662AA1B51800EF71C7 /* UserProfilePhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilePhotoCell.swift; sourceTree = "<group>"; };
 		76C802682AA1B8DD00EF71C7 /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
+		76C8026C2AA1BD7300EF71C7 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
+		76C8026E2AA1BE5600EF71C7 /* HomePostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePostCell.swift; sourceTree = "<group>"; };
 		76D289BE2A9DB1920028F67B /* instagramFireBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = instagramFireBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76D289C12A9DB1920028F67B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		76D289C32A9DB1920028F67B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +99,15 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		76C8026A2AA1BD6200EF71C7 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				76C8026C2AA1BD7300EF71C7 /* HomeController.swift */,
+				76C8026E2AA1BE5600EF71C7 /* HomePostCell.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		76D289B52A9DB1920028F67B = {
 			isa = PBXGroup;
 			children = (
@@ -118,12 +131,13 @@
 			children = (
 				76C802632AA1A4EA00EF71C7 /* Models */,
 				76D289D52A9DB7CA0028F67B /* Utils */,
-				76D289C12A9DB1920028F67B /* AppDelegate.swift */,
-				76D289C32A9DB1920028F67B /* SceneDelegate.swift */,
-				764557A82A9DDBF60026769C /* MainTabBarController.swift */,
 				DE2EF0A52A9F822000A33132 /* AddPhoto */,
 				7650E4D62A9F1A7D00EF906C /* Login */,
 				7650E4D32A9EC7AC00EF906C /* UserProfile */,
+				76D289C12A9DB1920028F67B /* AppDelegate.swift */,
+				76C8026A2AA1BD6200EF71C7 /* Home */,
+				76D289C32A9DB1920028F67B /* SceneDelegate.swift */,
+				764557A82A9DDBF60026769C /* MainTabBarController.swift */,
 				76D289C72A9DB1920028F67B /* Main.storyboard */,
 				76D289CA2A9DB1940028F67B /* Assets.xcassets */,
 				76D289CC2A9DB1940028F67B /* LaunchScreen.storyboard */,
@@ -319,8 +333,10 @@
 				764557A92A9DDBF60026769C /* MainTabBarController.swift in Sources */,
 				76C802622AA16DBF00EF71C7 /* SharePhotoController.swift in Sources */,
 				76C802602AA1687200EF71C7 /* PhotoSelectorHeader.swift in Sources */,
+				76C8026F2AA1BE5600EF71C7 /* HomePostCell.swift in Sources */,
 				7650E4D82A9F1A8800EF906C /* LoginController.swift in Sources */,
 				76D289C42A9DB1920028F67B /* SceneDelegate.swift in Sources */,
+				76C8026D2AA1BD7300EF71C7 /* HomeController.swift in Sources */,
 				76C802672AA1B51800EF71C7 /* UserProfilePhotoCell.swift in Sources */,
 				76D289D72A9DB7D60028F67B /* Extension.swift in Sources */,
 				76C8025E2AA1638C00EF71C7 /* PhotoSelectorCell.swift in Sources */,
