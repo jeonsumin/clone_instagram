@@ -12,13 +12,14 @@ class UserProfileHeader: UICollectionViewCell {
     
     var user: User? {
         didSet {
-            setupProfileImage()
+            guard let profileImageUrl = user?.profileImageUrl else { return }
+            profileImageView.loadImage(urlString: profileImageUrl)
             usernameLabrl.text = user?.username
         }
     }
     
-    let profileImageView: UIImageView = {
-        let imageView = UIImageView()
+    let profileImageView: CustomImageView = {
+        let imageView = CustomImageView()
         imageView.backgroundColor = .lightGray
         return imageView
     }()
@@ -149,27 +150,6 @@ class UserProfileHeader: UICollectionViewCell {
         
         setupProfileHandleView()
         setupBottomToolbar()
-    }
-    
-    fileprivate func setupProfileImage(){
-        guard let profileImageUrl = user?.profileImageUrl else { return }
-        guard let url = URL(string: profileImageUrl) else { return }
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            //에러 처리를 하고 가져온 이미지 데이터를 사용한다.
-            if let error = error {
-                print("Faild To Fetch Profile Image : ", error)
-                return
-            }
-            
-            guard let data = data else { return }
-            let image = UIImage(data: data)
-            
-            DispatchQueue.main.async {
-                self.profileImageView.image = image
-            }
-            
-        }.resume()
-        
     }
     
     fileprivate func setupBottomToolbar(){

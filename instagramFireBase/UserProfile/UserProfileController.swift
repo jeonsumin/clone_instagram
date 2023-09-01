@@ -28,7 +28,9 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         collectionView?.register(UserProfilePhotoCell.self, forCellWithReuseIdentifier: cellId)
         
         setupLogOutButton()
-        fetchPosts()
+//        fetchPosts()
+        
+        fetchOrderPosts()
     }
     
     // 컬렉션 셀의 개수 설정
@@ -77,7 +79,6 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     func fetchUser(){
         guard let uid = Auth.auth().currentUser?.uid else { return }
         Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value) { snapshot in
-            print(snapshot.value ?? "" )
             
             guard let dictionary = snapshot.value as? [String: Any] else { return }
             
@@ -102,13 +103,8 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
             guard let dictionaries = snapshot.value as? [String:Any] else { return }
             
             dictionaries.forEach{ key, value in
-                print("key : \(key) , value \(value)")
                 
                 guard let dictionary = value as? [String: Any] else { return }
-                let imageUrl = dictionary["imageUrl"] as? String
-                print("imageUrl \(imageUrl)")
-                
-                
                 let post = Post(dictionary: dictionary)
                 self.posts.append(post)
                 
@@ -120,6 +116,25 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         }
 
     }
+    
+    fileprivate func fetchOrderPosts() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let ref = Database.database().reference().child("posts/\(uid)")
+        
+        ref.queryOrdered(byChild: "creationDate").observe(.childAdded) { snapshot in
+            print()
+            guard let dictionary = snapshot.value as? [String:Any] else { return }
+            let post = Post(dictionary: dictionary)
+            self.posts.append(post)
+            
+            self.collectionView.reloadData()
+            
+        } withCancel: { error in
+            print("Faild to fetch posts : " ,error )
+        }
+
+    }
+    
     
     @objc func handleLogout(){
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
