@@ -23,12 +23,12 @@ class UserProfilePhotoCell: UICollectionViewCell {
                 
                 let photoImage = UIImage(data: imageData)
                 DispatchQueue.main.async {
-                    self.imageView.image = photoImage
+                    self.postImageView.image = photoImage
                 }
             }.resume()
         }
     }
-    let imageView: UIImageView = {
+    let postImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .gray
         imageView.contentMode = .scaleToFill
@@ -38,8 +38,8 @@ class UserProfilePhotoCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        addSubview(imageView)
-        imageView.anchor(top: topAnchor,
+        addSubview(postImageView)
+        postImageView.anchor(top: topAnchor,
                          left: leftAnchor,
                          bottom: bottomAnchor,
                          right: rightAnchor,
