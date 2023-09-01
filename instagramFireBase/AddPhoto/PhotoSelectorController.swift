@@ -15,6 +15,7 @@ class PhotoSelectorController: UICollectionViewController,UICollectionViewDelega
     var images = [UIImage]()
     var selectImage: UIImage?
     var assets = [PHAsset]()
+    var header: PhotoSelectorHeader?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +36,7 @@ class PhotoSelectorController: UICollectionViewController,UICollectionViewDelega
     }
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! PhotoSelectorHeader
-        header.photoImageView.image = selectImage
+        self.header = header
         
         if let selectImage = selectImage {
             if let index = self.images.index(of: selectImage) {
@@ -79,6 +80,8 @@ class PhotoSelectorController: UICollectionViewController,UICollectionViewDelega
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.selectImage = images[indexPath.item]
         self.collectionView.reloadData()
+        let indexPath = IndexPath(item:0,section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -136,6 +139,8 @@ class PhotoSelectorController: UICollectionViewController,UICollectionViewDelega
         dismiss(animated: true)
     }
     @objc func handleNext(){
-        print(123)
+        let sharePhotoController = SharePhotoController()
+        sharePhotoController.selectImage = header?.photoImageView.image
+        navigationController?.pushViewController(sharePhotoController, animated: true)
     }
 }
