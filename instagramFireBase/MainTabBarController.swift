@@ -49,7 +49,9 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
                                                       rootViewController: HomeController(collectionViewLayout: UICollectionViewFlowLayout()))
         // 검색 탭
         let searchNavController = templateNavController(unselectedImage: UIImage(named: "search_unselected")!,
-                                                        selectedImage: UIImage(named: "search_selected")!)
+                                                        selectedImage: UIImage(named: "search_selected")!,
+                                                        rootViewController: UserSearchController(collectionViewLayout: UICollectionViewFlowLayout())
+        )
         
         // 사진추가 탭
         let plusNavController = templateNavController(unselectedImage: UIImage(named: "plus_unselected")!,
