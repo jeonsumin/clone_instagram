@@ -78,17 +78,23 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     func fetchUser(){
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value) { snapshot in
-            
-            guard let dictionary = snapshot.value as? [String: Any] else { return }
-            
-            self.user = User(dictionary: dictionary)
+        Database.fetchUserWithUID(uid: uid) { user in
+            self.user = user
             self.navigationItem.title = self.user?.username
             self.collectionView.reloadData()
             
-        } withCancel: { error in
-            print("Faild To Fetch User: ",error)
         }
+//        Database.database().reference().child("users/\(uid)").observeSingleEvent(of: .value) { snapshot in
+//
+//            guard let dictionary = snapshot.value as? [String: Any] else { return }
+//
+//            self.user = User(uid: uid, dictionary: dictionary)
+//            self.navigationItem.title = self.user?.username
+//            self.collectionView.reloadData()
+//
+//        } withCancel: { error in
+//            print("Faild To Fetch User: ",error)
+//        }
 
     }
     

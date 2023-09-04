@@ -25,30 +25,30 @@ class HomeController: UICollectionViewController,UICollectionViewDelegateFlowLay
     fileprivate func fetchPosts(){
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        Database.database().reference().child("users/\(uid)").observeSingleEvent(of: .value) { snapshot in
-            guard let userDictionary = snapshot.value as? [String:Any] else { return }
+        Database.fetchUserWithUID(uid: uid) { user in
+            self.fetchPostsWithUser(user: user)
             
-            let user = User(dictionary: userDictionary)
-            
-            let ref = Database.database().reference().child("posts/\(uid)")
-            ref.observeSingleEvent(of: .value) { snapshot  in
-                guard let dictionaries = snapshot.value as? [String:Any] else { return }
-                
-                dictionaries.forEach{ key, value in
-                    guard let dictionary = value as? [String: Any] else { return }
-                    let post = Post(user: user, dictionary: dictionary)
-                    self.posts.append(post)
-                }
-                self.collectionView.reloadData()
-                
-            } withCancel: { error in
-                print("Faild to fetch posts : " ,error )
-            }   
-        } withCancel: { error in
-            print("Faild to fetch user for posts", error)
         }
     }
     
+    fileprivate func fetchPostsWithUser(user: User){
+        
+//        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let ref = Database.database().reference().child("posts/\(user.uid)")
+        ref.observeSingleEvent(of: .value) { snapshot  in
+            guard let dictionaries = snapshot.value as? [String:Any] else { return }
+            
+            dictionaries.forEach{ key, value in
+                guard let dictionary = value as? [String: Any] else { return }
+                let post = Post(user: user, dictionary: dictionary)
+                self.posts.append(post)
+            }
+            self.collectionView.reloadData()
+            
+        } withCancel: { error in
+            print("Faild to fetch posts : " ,error )
+        }
+    }
     func setupNavigationItems(){
         navigationItem.titleView = UIImageView(image: UIImage(named: "logo2"))
     }

@@ -20,6 +20,7 @@
 		76C8026D2AA1BD7300EF71C7 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C8026C2AA1BD7300EF71C7 /* HomeController.swift */; };
 		76C8026F2AA1BE5600EF71C7 /* HomePostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C8026E2AA1BE5600EF71C7 /* HomePostCell.swift */; };
 		76C802712AA1D23100EF71C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802702AA1D23100EF71C7 /* User.swift */; };
+		76C802732AA562DF00EF71C7 /* FirebaseUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802722AA562DF00EF71C7 /* FirebaseUtils.swift */; };
 		76D289C22A9DB1920028F67B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C12A9DB1920028F67B /* AppDelegate.swift */; };
 		76D289C42A9DB1920028F67B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C32A9DB1920028F67B /* SceneDelegate.swift */; };
 		76D289C62A9DB1920028F67B /* SignupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C52A9DB1920028F67B /* SignupController.swift */; };
@@ -48,6 +49,7 @@
 		76C8026C2AA1BD7300EF71C7 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		76C8026E2AA1BE5600EF71C7 /* HomePostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePostCell.swift; sourceTree = "<group>"; };
 		76C802702AA1D23100EF71C7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		76C802722AA562DF00EF71C7 /* FirebaseUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUtils.swift; sourceTree = "<group>"; };
 		76D289BE2A9DB1920028F67B /* instagramFireBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = instagramFireBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76D289C12A9DB1920028F67B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		76D289C32A9DB1920028F67B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -137,8 +139,8 @@
 				DE2EF0A52A9F822000A33132 /* AddPhoto */,
 				7650E4D62A9F1A7D00EF906C /* Login */,
 				7650E4D32A9EC7AC00EF906C /* UserProfile */,
-				76D289C12A9DB1920028F67B /* AppDelegate.swift */,
 				76C8026A2AA1BD6200EF71C7 /* Home */,
+				76D289C12A9DB1920028F67B /* AppDelegate.swift */,
 				76D289C32A9DB1920028F67B /* SceneDelegate.swift */,
 				764557A82A9DDBF60026769C /* MainTabBarController.swift */,
 				76D289C72A9DB1920028F67B /* Main.storyboard */,
@@ -155,6 +157,7 @@
 			children = (
 				76D289D62A9DB7D60028F67B /* Extension.swift */,
 				76C802682AA1B8DD00EF71C7 /* CustomImageView.swift */,
+				76C802722AA562DF00EF71C7 /* FirebaseUtils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -331,6 +334,7 @@
 				76D289C22A9DB1920028F67B /* AppDelegate.swift in Sources */,
 				DE2EF0A72A9F823200A33132 /* PhotoSelectorController.swift in Sources */,
 				76C802692AA1B8DD00EF71C7 /* CustomImageView.swift in Sources */,
+				76C802732AA562DF00EF71C7 /* FirebaseUtils.swift in Sources */,
 				76C802652AA1A4FF00EF71C7 /* Post.swift in Sources */,
 				764557AB2A9DDCFB0026769C /* UserProfileController.swift in Sources */,
 				764557A92A9DDBF60026769C /* MainTabBarController.swift in Sources */,
