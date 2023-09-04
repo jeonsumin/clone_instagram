@@ -28,7 +28,7 @@ class HomePostCell: UICollectionViewCell {
         let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
-        iv.backgroundColor = .blue
+        iv.backgroundColor = .systemGray5
         return iv
     }()
     

@@ -11,7 +11,7 @@ import Firebase
 class SharePhotoController: UIViewController {
     let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .red
+        imageView.backgroundColor = .systemGray5
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView

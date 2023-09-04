@@ -8,11 +8,16 @@
 import UIKit
 import Firebase
 
+protocol searchResultDelegate {
+    func didTappedSearchUserProfile(userId: String)
+}
+
 class SearchResultView: UIView{
+    var delegate: searchResultDelegate?
     
     let profileImageView: CustomImageView = {
         let imageView = CustomImageView()
-        imageView.backgroundColor = .red
+        imageView.backgroundColor = .systemGray5
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         
@@ -72,6 +77,11 @@ class SearchResultView: UIView{
             dictionaries.forEach{ key, value  in
                 guard let userDictionary = value as? [String: Any] else { return }
                 
+                if key == Auth.auth().currentUser?.uid {
+                    print("Found myself, omit from list")
+                    return
+                }
+                
                 let user = User(uid: key, dictionary: userDictionary)
                 self.users.append(user)
             }
@@ -106,5 +116,10 @@ extension SearchResultView: UICollectionViewDelegate, UICollectionViewDataSource
         cell.user = filteredUsers[indexPath.row]
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let user = filteredUsers[indexPath.item]
+        delegate?.didTappedSearchUserProfile(userId: user.uid)
     }
 }

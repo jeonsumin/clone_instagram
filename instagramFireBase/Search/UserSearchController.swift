@@ -8,7 +8,7 @@
 import UIKit
 import Firebase
 
-class UserSearchController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class UserSearchController: UICollectionViewController, UICollectionViewDelegateFlowLayout,searchResultDelegate{
     let cellId = "cellId"
     var posts = [Post]()
     
@@ -22,6 +22,11 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
     }()
     
     let userSearchView = SearchResultView()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        searchBar.isHidden = false
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,6 +70,8 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
         
         userSearchView.alpha = 0
         
+        userSearchView.delegate = self
+        userSearchView.collectionView.keyboardDismissMode = .onDrag
         fetchPosts()
     }
     
@@ -91,6 +98,15 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
         return cell
     }
     
+    func didTappedSearchUserProfile(userId: String) {
+        
+        searchBar.isHidden = true
+        searchBar.resignFirstResponder()
+        
+        let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+        userProfileController.userId = userId
+        self.navigationController?.pushViewController(userProfileController, animated: true)
+    }
     
     fileprivate func fetchPosts(){
         let ref = Database.database().reference().child("posts")

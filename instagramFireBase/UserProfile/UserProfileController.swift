@@ -13,6 +13,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     var user: User?
     let cellId = "cellId"
     var posts = [Post]()
+    var userId: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,9 +29,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         collectionView?.register(UserProfilePhotoCell.self, forCellWithReuseIdentifier: cellId)
         
         setupLogOutButton()
-//        fetchPosts()
-        
-        fetchOrderPosts()
+//        fetchOrderPosts()
     }
     
     // 컬렉션 셀의 개수 설정
@@ -77,25 +76,15 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     
     func fetchUser(){
-        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let uid = userId ?? Auth.auth().currentUser?.uid ?? ""
+//        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
         Database.fetchUserWithUID(uid: uid) { user in
             self.user = user
             self.navigationItem.title = self.user?.username
             self.collectionView.reloadData()
-            
+            self.fetchOrderPosts()
         }
-//        Database.database().reference().child("users/\(uid)").observeSingleEvent(of: .value) { snapshot in
-//
-//            guard let dictionary = snapshot.value as? [String: Any] else { return }
-//
-//            self.user = User(uid: uid, dictionary: dictionary)
-//            self.navigationItem.title = self.user?.username
-//            self.collectionView.reloadData()
-//
-//        } withCancel: { error in
-//            print("Faild To Fetch User: ",error)
-//        }
-
     }
     
     fileprivate func setupLogOutButton(){
@@ -103,7 +92,8 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     }
     
     fileprivate func fetchOrderPosts() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let uid = self.user?.uid else { return }
+        
         let ref = Database.database().reference().child("posts/\(uid)")
         
         ref.queryOrdered(byChild: "creationDate").observe(.childAdded) { snapshot in
@@ -111,10 +101,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
             
             guard let user = self.user else { return }
             let post = Post(user: user, dictionary: dictionary)
-//            let post = Post(dictionary: dictionary)
             self.posts.insert(post,at:0)
-//            self.posts.append(post)
-            
             self.collectionView.reloadData()
             
         } withCancel: { error in

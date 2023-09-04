@@ -86,9 +86,6 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         let greenView = UIView()
         greenView.backgroundColor = .green
         
-        let redView = UIView()
-        redView.backgroundColor = .red
-        
         let stackView = UIStackView(arrangedSubviews: [emailTextField, usernameTextField, passwordTextField,signUpButton])
         
         stackView.distribution = .fillEqually
