@@ -24,6 +24,7 @@
 		76C802762AA563C300EF71C7 /* UserSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802752AA563C300EF71C7 /* UserSearchController.swift */; };
 		76C802782AA5663900EF71C7 /* UserSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802772AA5663800EF71C7 /* UserSearchCell.swift */; };
 		76C8027A2AA5940E00EF71C7 /* SearchResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C802792AA5940E00EF71C7 /* SearchResultView.swift */; };
+		76C8027C2AA5B03700EF71C7 /* SearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C8027B2AA5B03700EF71C7 /* SearchCell.swift */; };
 		76D289C22A9DB1920028F67B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C12A9DB1920028F67B /* AppDelegate.swift */; };
 		76D289C42A9DB1920028F67B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C32A9DB1920028F67B /* SceneDelegate.swift */; };
 		76D289C62A9DB1920028F67B /* SignupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D289C52A9DB1920028F67B /* SignupController.swift */; };
@@ -56,6 +57,7 @@
 		76C802752AA563C300EF71C7 /* UserSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchController.swift; sourceTree = "<group>"; };
 		76C802772AA5663800EF71C7 /* UserSearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchCell.swift; sourceTree = "<group>"; };
 		76C802792AA5940E00EF71C7 /* SearchResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultView.swift; sourceTree = "<group>"; };
+		76C8027B2AA5B03700EF71C7 /* SearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCell.swift; sourceTree = "<group>"; };
 		76D289BE2A9DB1920028F67B /* instagramFireBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = instagramFireBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76D289C12A9DB1920028F67B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		76D289C32A9DB1920028F67B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				76C802752AA563C300EF71C7 /* UserSearchController.swift */,
+				76C8027B2AA5B03700EF71C7 /* SearchCell.swift */,
 				76C802792AA5940E00EF71C7 /* SearchResultView.swift */,
 				76C802772AA5663800EF71C7 /* UserSearchCell.swift */,
 			);
@@ -368,6 +371,7 @@
 				76D289D72A9DB7D60028F67B /* Extension.swift in Sources */,
 				76C802782AA5663900EF71C7 /* UserSearchCell.swift in Sources */,
 				76C8025E2AA1638C00EF71C7 /* PhotoSelectorCell.swift in Sources */,
+				76C8027C2AA5B03700EF71C7 /* SearchCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,6 +10,7 @@ import Firebase
 
 class UserSearchController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     let cellId = "cellId"
+    var posts = [Post]()
     
     lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -45,7 +46,7 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
         searchBar.setValue("취소", forKey: "cancelButtonText")
         
         
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(SearchCell.self, forCellWithReuseIdentifier: cellId)
         
         collectionView.alwaysBounceVertical = true
         
@@ -63,11 +64,14 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
                               height: 0)
         
         userSearchView.alpha = 0
+        
+        fetchPosts()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
@@ -78,26 +82,49 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return posts.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
-        cell.backgroundColor = .red
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! SearchCell
+        cell.posts = self.posts[indexPath.row]
         return cell
     }
     
     
+    fileprivate func fetchPosts(){
+        let ref = Database.database().reference().child("posts")
+        ref.observeSingleEvent(of: .value) { snapshot in
+            guard let dictionary = snapshot.value as? [String:Any] else { return }
+            dictionary.keys.forEach { users in
+                Database.fetchUserWithUID(uid: users) { user in
+                    self.fetchPostsWithUser(user: user)
+                }
+            }
+        }
+    }
+    
+    fileprivate func fetchPostsWithUser(user: User){
+        let ref = Database.database().reference().child("posts/\(user.uid)")
+        ref.observeSingleEvent(of: .value) { snapshot  in
+            guard let dictionaries = snapshot.value as? [String:Any] else { return }
+            
+            dictionaries.forEach{ key, value in
+                guard let dictionary = value as? [String: Any] else { return }
+                let post = Post(user: user, dictionary: dictionary)
+                self.posts.append(post)
+            }
+            self.collectionView.reloadData()
+            
+        } withCancel: { error in
+            print("Faild to fetch posts : " ,error )
+        }
+    }
 }
 
 extension UserSearchController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        
-//        if searchText.isEmpty {
-//            self.userSearchView.filteredUsers = self.userSearchView.users
-//        }
-        
         self.userSearchView.filteredUsers = self.userSearchView.users.filter { user -> Bool in
             return user.username.lowercased().contains(searchText.lowercased())
         }
