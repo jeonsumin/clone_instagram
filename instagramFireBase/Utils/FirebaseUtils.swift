@@ -11,8 +11,7 @@ import Firebase
 
 extension Database {
     static func fetchUserWithUID(uid: String, completion: @escaping (User) -> () ){
-        print("FEtching user with uid: ", uid)
-        
+
         Database.database().reference().child("users/\(uid)").observeSingleEvent(of: .value) { snapshot in
             guard let userDictionary = snapshot.value as? [String:Any] else { return }
             let user = User(uid: uid, dictionary: userDictionary)

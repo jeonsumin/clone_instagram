@@ -23,17 +23,18 @@ class HomeController: UICollectionViewController,UICollectionViewDelegateFlowLay
     }
     
     fileprivate func fetchPosts(){
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-        Database.fetchUserWithUID(uid: uid) { user in
-            self.fetchPostsWithUser(user: user)
-            
+        let ref = Database.database().reference().child("posts")
+        ref.observeSingleEvent(of: .value) { snapshot in
+            guard let dictionary = snapshot.value as? [String:Any] else { return }
+            dictionary.keys.forEach { users in
+                Database.fetchUserWithUID(uid: users) { user in
+                    self.fetchPostsWithUser(user: user)
+                }
+            }
         }
     }
     
     fileprivate func fetchPostsWithUser(user: User){
-        
-//        guard let uid = Auth.auth().currentUser?.uid else { return }
         let ref = Database.database().reference().child("posts/\(user.uid)")
         ref.observeSingleEvent(of: .value) { snapshot  in
             guard let dictionaries = snapshot.value as? [String:Any] else { return }
