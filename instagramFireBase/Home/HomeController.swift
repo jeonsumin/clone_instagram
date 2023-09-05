@@ -14,13 +14,21 @@ class HomeController: UICollectionViewController,UICollectionViewDelegateFlowLay
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleUpdate),
+                                               name: SharePhotoController.updateFeedNotificationName,
+                                               object: nil)
+        
         view.backgroundColor = .white
         
         collectionView.register(HomePostCell.self, forCellWithReuseIdentifier: cellId)
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
         
         setupNavigationItems()
-        fetchPosts()
-        fetchFollowUserIds()
+        fetchAllPosts()
         
     }
     
@@ -49,11 +57,15 @@ class HomeController: UICollectionViewController,UICollectionViewDelegateFlowLay
     fileprivate func fetchPostsWithUser(user: User){
         let ref = Database.database().reference().child("posts/\(user.uid)")
         ref.observeSingleEvent(of: .value) { snapshot  in
+            self.collectionView.refreshControl?.endRefreshing()
+            
             guard let dictionaries = snapshot.value as? [String:Any] else { return }
             
             dictionaries.forEach{ key, value in
                 guard let dictionary = value as? [String: Any] else { return }
+                
                 let post = Post(user: user, dictionary: dictionary)
+                
                 self.posts.append(post)
             }
             
@@ -68,6 +80,21 @@ class HomeController: UICollectionViewController,UICollectionViewDelegateFlowLay
     }
     func setupNavigationItems(){
         navigationItem.titleView = UIImageView(image: UIImage(named: "logo2"))
+    }
+    
+    fileprivate func fetchAllPosts(){
+        fetchPosts()
+        fetchFollowUserIds()
+    }
+    
+    @objc func handleRefresh(){
+        print("handle refresh")
+        
+        posts.removeAll()
+        fetchAllPosts()
+    }
+    @objc func handleUpdate(){
+        handleRefresh()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -85,7 +112,10 @@ class HomeController: UICollectionViewController,UICollectionViewDelegateFlowLay
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! HomePostCell
-        cell.post = posts[indexPath.item]
+        if posts.count > 0 {
+            cell.post = posts[indexPath.item]
+        }
+        
         return cell
     }
     
