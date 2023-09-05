@@ -15,6 +15,7 @@ class UserProfileHeader: UICollectionViewCell {
             guard let profileImageUrl = user?.profileImageUrl else { return }
             profileImageView.loadImage(urlString: profileImageUrl)
             usernameLabrl.text = user?.username
+            setupEditFollowButton()
         }
     }
     
@@ -92,12 +93,13 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
-    let editProfileButton: UIButton = {
+    let editProfileFollowButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("프로필 편집", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.backgroundColor = .systemGray5
+        button.addTarget(self, action: #selector(handleEditProfileOrFollwow), for: .touchUpInside)
         
         return button
     }()
@@ -159,7 +161,7 @@ class UserProfileHeader: UICollectionViewCell {
         stackView.distribution = .fillEqually
         addSubview(stackView)
         stackView.anchor(
-            top: editProfileButton.bottomAnchor,
+            top: editProfileFollowButton.bottomAnchor,
             left: leftAnchor,
             bottom: nil,
             right: rightAnchor,
@@ -194,7 +196,7 @@ class UserProfileHeader: UICollectionViewCell {
     
     fileprivate func setupProfileHandleView(){
         
-        let stackView = UIStackView(arrangedSubviews: [editProfileButton,sharedProfileButton])
+        let stackView = UIStackView(arrangedSubviews: [editProfileFollowButton,sharedProfileButton])
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
         stackView.spacing = 8
@@ -211,8 +213,77 @@ class UserProfileHeader: UICollectionViewCell {
             width: 0,
             height: 37
         )
-        [editProfileButton,sharedProfileButton].forEach{
+        [editProfileFollowButton,sharedProfileButton].forEach{
             $0.layer.cornerRadius = 8
+        }
+        
+    }
+    
+    fileprivate func setupEditFollowButton(){
+        
+        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
+        guard let userId = user?.uid else { return }
+        
+        if currentLoggedInUserId == userId {
+            
+        } else {
+            
+            //팔로잉 체크
+            Database.database().reference().child("following/\(currentLoggedInUserId)/\(userId)").observeSingleEvent(of: .value) { snapshot in
+                
+                if let isFollowing = snapshot.value as? Int , isFollowing == 1 {
+                    self.setupFollowingStyle()
+                }else {
+                    self.setupFollowStyle()
+                }
+            }
+            
+        }
+        
+        
+    }
+    
+    fileprivate func setupFollowStyle() {
+        self.editProfileFollowButton.setTitle("팔로우", for: .normal)
+        self.editProfileFollowButton.backgroundColor = UIColor.rgb(red: 17, green: 154, blue: 237)
+        self.editProfileFollowButton.setTitleColor(.white, for: .normal)
+    }
+    
+    fileprivate func setupFollowingStyle() {
+        self.editProfileFollowButton.setTitle("팔로잉", for: .normal)
+        self.editProfileFollowButton.backgroundColor = .systemGray5
+        self.editProfileFollowButton.setTitleColor(.black, for: .normal)
+        
+    }
+    
+    @objc func handleEditProfileOrFollwow(){
+        print("Execute edit profile / follow / unfollow logic ")
+        
+        guard let currentLoggedInuserId = Auth.auth().currentUser?.uid else { return }
+        guard let userId = user?.uid else { return }
+        
+        if editProfileFollowButton.titleLabel?.text == "팔로잉" {
+            Database.database().reference().child("following/\(currentLoggedInuserId)/\(userId)").removeValue { err, ref in
+                if let err = err {
+                    print("Failed to following user : ",err)
+                    return
+                }
+                print("Successfully following user: ", self.user?.username ?? "" )
+                self.setupFollowStyle()
+            }
+        } else { //팔로우
+            let ref = Database.database().reference().child("following/\(currentLoggedInuserId)")
+            let values = [userId: 1]
+            ref.updateChildValues(values) { err, ref in
+                if let err = err {
+                    print("Failed to follow user:", err)
+                    return
+                }
+                
+                print("Successfully Followed user: ", self.user?.username ?? "")
+                self.setupFollowingStyle()
+//                setupFollowStyle()
+            }
         }
         
     }
