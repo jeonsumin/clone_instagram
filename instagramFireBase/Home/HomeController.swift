@@ -103,6 +103,8 @@ class HomeController: UICollectionViewController{
      */
     func setupNavigationItems(){
         navigationItem.titleView = UIImageView(image: UIImage(named: "logo2"))
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "camera3")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleCamera))
     }
     
     /**
@@ -132,6 +134,20 @@ class HomeController: UICollectionViewController{
         handleRefresh()
     }
     
+    /**
+     네비게이션 왼쪽 아이팀 액션
+     
+     카메라 호출 메서드
+     */
+    @objc func handleCamera(){
+        print("Showing camera")
+        
+        let cameraController = CameraController()
+        cameraController.modalPresentationStyle = .fullScreen
+        
+        present(cameraController, animated: true)
+    }
+    
     
 }
 //MARK: - CollectionView Delegate
@@ -153,7 +169,7 @@ extension HomeController: UICollectionViewDelegateFlowLayout {
         return posts.count
     }
     
-    // 컬렉션뷰의 셀 속성 설정 
+    // 컬렉션뷰의 셀 속성 설정
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! HomePostCell
         if posts.count > 0 {
