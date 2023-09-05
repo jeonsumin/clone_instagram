@@ -20,17 +20,29 @@ class HomeController: UICollectionViewController,UICollectionViewDelegateFlowLay
         
         setupNavigationItems()
         fetchPosts()
+        fetchFollowUserIds()
+        
     }
     
-    fileprivate func fetchPosts(){
-        let ref = Database.database().reference().child("posts")
-        ref.observeSingleEvent(of: .value) { snapshot in
-            guard let dictionary = snapshot.value as? [String:Any] else { return }
-            dictionary.keys.forEach { users in
-                Database.fetchUserWithUID(uid: users) { user in
+    fileprivate func fetchFollowUserIds(){
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        Database.database().reference().child("following/\(uid)").observeSingleEvent(of: .value) { snapshot in
+            
+            guard let userIdsDictionary = snapshot.value as? [String: Any] else { return }
+            
+            userIdsDictionary.forEach { key, value in
+                Database.fetchUserWithUID(uid: key) { user in
                     self.fetchPostsWithUser(user: user)
                 }
             }
+        }
+    }
+    
+    fileprivate func fetchPosts(){
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        Database.fetchUserWithUID(uid: uid) { user in
+            self.fetchPostsWithUser(user: user)
         }
     }
     
@@ -43,6 +55,10 @@ class HomeController: UICollectionViewController,UICollectionViewDelegateFlowLay
                 guard let dictionary = value as? [String: Any] else { return }
                 let post = Post(user: user, dictionary: dictionary)
                 self.posts.append(post)
+            }
+            
+            self.posts.sort { (p1, p2) -> Bool in
+                return p1.createDate.compare(p2.createDate) == .orderedDescending
             }
             self.collectionView.reloadData()
             

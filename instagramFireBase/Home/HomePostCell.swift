@@ -130,7 +130,9 @@ class HomePostCell: UICollectionViewCell {
         let attributedText = NSMutableAttributedString(string: post.user.username ,attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14)])
         attributedText.append(NSAttributedString(string: " \(post.cation)",attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)]))
         attributedText.append(NSAttributedString(string: "\n\n", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 4)]))
-        attributedText.append(NSAttributedString(string: "일주일 전",attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor : UIColor.gray]))
+        
+        let timeAgoDisplay = post.createDate.timeAgoDisplay()
+        attributedText.append(NSAttributedString(string: timeAgoDisplay,attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor : UIColor.gray]))
     
         self.captionLabel.attributedText = attributedText
     }
