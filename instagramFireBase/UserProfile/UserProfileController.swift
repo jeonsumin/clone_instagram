@@ -9,17 +9,18 @@ import UIKit
 import Firebase
 
 class UserProfileController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
-    
+
+    //MARK: - Properties
     var user: User?
     let cellId = "cellId"
     var posts = [Post]()
     var userId: String?
     
+    //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         collectionView.backgroundColor = .white
-        
         navigationItem.title = Auth.auth().currentUser?.uid
         
         fetchUser()
@@ -32,6 +33,8 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
 //        fetchOrderPosts()
     }
     
+    
+    //MARK: - CollectionView Delegate / Datasource / FlowLayout
     // 컬렉션 셀의 개수 설정
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return posts.count
@@ -43,6 +46,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         cell.post = posts[indexPath.item]
         return cell
     }
+    
     // top / bottom spacing 조정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 1
@@ -74,7 +78,12 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     }
     
     
-    
+    //MARK: - Function
+    /**
+     사용자 가져오기 
+     
+     로그인 된 사용자 정보 가져오와서 해당 사용자의 포스터 리스트 가져오기
+     */
     func fetchUser(){
         let uid = userId ?? Auth.auth().currentUser?.uid ?? ""
 //        guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -83,25 +92,37 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
             self.user = user
             self.navigationItem.title = self.user?.username
             self.collectionView.reloadData()
+            
+            // 사용자
             self.fetchOrderPosts()
         }
     }
     
+    /**
+     네비게이션바에 로그아웃버튼 추가 메소드
+     */
     fileprivate func setupLogOutButton(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(handleLogout))
     }
     
+    /**
+     포스트 리스트 가져오기
+     
+     파이어베이스에서 포스트 리스트 가져오기
+     */
     fileprivate func fetchOrderPosts() {
         guard let uid = self.user?.uid else { return }
         
         let ref = Database.database().reference().child("posts/\(uid)")
         
+        // queryOrdered byChild를 기준으로 정렬된 값들을 가져온다.
         ref.queryOrdered(byChild: "creationDate").observe(.childAdded) { snapshot in
             guard let dictionary = snapshot.value as? [String:Any] else { return }
             
             guard let user = self.user else { return }
             let post = Post(user: user, dictionary: dictionary)
             self.posts.insert(post,at:0)
+            
             self.collectionView.reloadData()
             
         } withCancel: { error in
@@ -110,7 +131,12 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
 
     }
     
-    
+    //MARK: - Action Selector Methods
+    /**
+     로그아웃 핸들링 메소드
+     
+     파이어베이스의 로그아웃
+     */
     @objc func handleLogout(){
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: "로그아웃", style: .destructive,handler: { _ in

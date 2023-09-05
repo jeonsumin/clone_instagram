@@ -9,7 +9,10 @@ import UIKit
 import Firebase
 
 class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+
+    //MARK: - Properties
     
+    // 이미지 추가 버튼
     let plusPhotoButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "plus_photo.png"), for: .normal)
@@ -17,6 +20,7 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         return button
     }()
     
+    // 이메일 필드
     let emailTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Email"
@@ -26,6 +30,8 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         return tf
     }()
+    
+    //닉네임 필드
     let usernameTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Username"
@@ -35,6 +41,8 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         return tf
     }()
+    
+    // 비밀번호 필드
     let passwordTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Password"
@@ -46,6 +54,7 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         return tf
     }()
     
+    // 회원가입 버튼
     let signUpButton: UIButton = {
         let button = UIButton(type: .system )
         button.setTitle("Sign Up", for: .normal)
@@ -58,6 +67,8 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         return button
     }()
     
+    
+    //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -82,10 +93,13 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
         
     }
     
+    
+    //MARK: - Function
+    
+    /**
+     텍스트 필드 스택뷰 설정
+     */
     fileprivate func setupInputFields(){
-        let greenView = UIView()
-        greenView.backgroundColor = .green
-        
         let stackView = UIStackView(arrangedSubviews: [emailTextField, usernameTextField, passwordTextField,signUpButton])
         
         stackView.distribution = .fillEqually
@@ -106,13 +120,16 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
     }
     
     /**
-     로그인 버튼 핸들링 (Firebase Auth)
+     로그인 버튼 핸들링
+     
+     파이어베이스( 인증,데이터베이스, 스토리지)를 활용하여 회원 정보 및 회원썸네일을 저장
      */
     @objc func handleSignUp(){
         guard let email = emailTextField.text, email.count > 0 else { return }
         guard let username = usernameTextField.text, username.count > 0 else { return }
         guard let password = passwordTextField.text, password.count > 0 else { return }
 
+        // 파이어베이스 사용자 인증 추가
         Auth.auth().createUser(withEmail: email, password: password) { user, error in
             if let err = error {
                 print("Failed to create user : ", err)
@@ -125,12 +142,14 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
             guard let uploadData = image.jpegData(compressionQuality: 0.3) else { return }
             
             let filename = NSUUID().uuidString
+            
+            //파이어베이스 스토리지에 프로필이미지 저장
             Storage.storage().reference().child("profile_images/\(filename)").putData(uploadData,metadata: nil,completion: { [weak self]metadata, error in
                 if let error = error {
                     print("Failed to upload profile iamge: ",error)
                     return
                 }
-                
+                // 스토리지에 저장된 프로필이미지의 url을 가져온다.
                 Storage.storage().reference().child("profile_images/\(filename)").downloadURL { url, error in
                     if let error = error {
                         print("Fiald get proflie Download url ", error)
@@ -141,6 +160,8 @@ class SignupController: UIViewController, UIImagePickerControllerDelegate,UINavi
                     guard let uid = user?.user.uid else { return }
                     let dictionaryValues = ["username": username, "profileImageUrl": profileImageUrl]
                     let values = [uid: dictionaryValues]
+                    
+                    // 닉네임과 프로필이미지경로를 데이터베이스에 저장
                     Database.database().reference().child("users").updateChildValues(values) { error, ref in
                         if let err = error {
                             print("Failed to save user info into db: ", err)

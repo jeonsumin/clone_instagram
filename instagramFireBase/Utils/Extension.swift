@@ -18,6 +18,9 @@ extension UIColor {
 }
 
 extension Date {
+    /**
+     게시글 업로드 몇 시간 전으로 표시
+     */
     func timeAgoDisplay() -> String {
         let secondsAgo = Int(Date().timeIntervalSince(self))
         

@@ -8,6 +8,7 @@
 import UIKit
 
 class HomePostCell: UICollectionViewCell {
+    //MARK: - Propreties
     var post: Post? {
         didSet {
             guard let postImageUrl = post?.imageUrl else { return }
@@ -24,6 +25,7 @@ class HomePostCell: UICollectionViewCell {
         }
     }
     
+    // 프로필 썸네일
     let userProfileImageView: CustomImageView = {
         let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill
@@ -32,6 +34,7 @@ class HomePostCell: UICollectionViewCell {
         return iv
     }()
     
+    // 게시글 이미지
     let photoImageView: CustomImageView = {
         let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill
@@ -39,6 +42,7 @@ class HomePostCell: UICollectionViewCell {
         return iv
     }()
     
+    // 사용자 이름
     let usernameLabel:UILabel = {
         let label = UILabel()
         label.text = "username"
@@ -47,6 +51,7 @@ class HomePostCell: UICollectionViewCell {
         return label
     }()
     
+    // 더보기 버튼
     let optionButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("•••", for: .normal)
@@ -55,30 +60,35 @@ class HomePostCell: UICollectionViewCell {
         return button
     }()
     
+    // 좋아요 버튼
     let likeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "like_unselected")?.withRenderingMode(.alwaysOriginal), for: .normal)
         return button
     }()
     
+    // 댓글 버튼
     let commentButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "comment")?.withRenderingMode(.alwaysOriginal), for: .normal)
         return button
     }()
     
+    //DM버튼
     let sendMessageButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "send2")?.withRenderingMode(.alwaysOriginal), for: .normal)
         return button
     }()
     
+    // 북마크 버튼
     let bookmarkButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "ribbon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         return button
     }()
     
+    // 게시글 설명
     let captionLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -86,6 +96,7 @@ class HomePostCell: UICollectionViewCell {
         return label
     }()
     
+    //MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         [userProfileImageView,usernameLabel,optionButton,photoImageView].forEach{ addSubview($0)}
@@ -123,6 +134,14 @@ class HomePostCell: UICollectionViewCell {
         captionLabel.anchor(top: likeButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBotton: 0, paddingRight: 8, width: 0, height: 0)
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - Function
+    /**
+     게시글 설명 타이틀 텍스트 속성 설정
+     */
     fileprivate func setupAttributedCaption() {
         guard let post = self.post else { return }
         
@@ -137,6 +156,11 @@ class HomePostCell: UICollectionViewCell {
         self.captionLabel.attributedText = attributedText
     }
     
+    /**
+     게시글 액션 버튼 스택뷰 설정
+     
+     좋아요, 댓글,DM 버튼
+     */
     fileprivate func setupActionButtons(){
         let stackView = UIStackView(arrangedSubviews: [likeButton,commentButton,sendMessageButton])
         stackView.distribution = .fillEqually
@@ -145,9 +169,5 @@ class HomePostCell: UICollectionViewCell {
         
         addSubview(bookmarkButton)
         bookmarkButton.anchor(top: photoImageView.bottomAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBotton: 0, paddingRight: 0, width: 40, height: 50)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

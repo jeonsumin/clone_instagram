@@ -13,6 +13,9 @@ class CustomImageView: UIImageView {
     
     var lastURLUsedToLoadImage: String?
     
+    /**
+     캐시 이미지 및 이미지URL 바인딩 
+     */
     func loadImage(urlString: String) {
         lastURLUsedToLoadImage = urlString
         

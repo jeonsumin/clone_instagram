@@ -10,6 +10,8 @@ import Firebase
 
 class LoginController: UIViewController {
     
+    //MARK: - Properties
+    // 로고 이미지
     let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "Instagram_logo_white")
@@ -18,6 +20,7 @@ class LoginController: UIViewController {
         return imageView
     }()
     
+    // 이메일 필드
     let emailTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Email"
@@ -28,6 +31,7 @@ class LoginController: UIViewController {
         return tf
     }()
 
+    //비밀번호 필드
     let passwordTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Password"
@@ -38,6 +42,8 @@ class LoginController: UIViewController {
         tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         return tf
     }()
+    
+    //로그인 버튼
     let loginButton: UIButton = {
         let button = UIButton(type: .system )
         button.setTitle("Log In", for: .normal)
@@ -50,6 +56,7 @@ class LoginController: UIViewController {
         return button
     }()
     
+    // 회원가입 버튼
     let signUpButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("계정이 없으신가요? 회원가입", for: .normal)
@@ -57,6 +64,7 @@ class LoginController: UIViewController {
         return button
     }()
     
+    //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -65,6 +73,7 @@ class LoginController: UIViewController {
         setupinputFields()
         
         view.addSubview(signUpButton)
+        
         signUpButton.anchor(
             top: loginButton.bottomAnchor,
             left: loginButton.leftAnchor,
@@ -79,6 +88,10 @@ class LoginController: UIViewController {
         )
         
     }
+    
+    /**
+     이메일, 비밀번호, 로그인 버튼 스택뷰 설정
+     */
     func setupinputFields(){
         let stackView = UIStackView(arrangedSubviews: [emailTextField,passwordTextField,loginButton])
         view.addSubview(stackView)
@@ -114,12 +127,18 @@ class LoginController: UIViewController {
         
     }
     
+    /**
+     회원가입 페이지 전환
+     */
     @objc func handlShowSignUp(){
         let signUpController = SignupController()
         navigationController?.pushViewController(signUpController, animated: true)
         
     }
     
+    /**
+     로그인 액션 메소드
+     */
     @objc func handleLogin(){
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
@@ -140,6 +159,11 @@ class LoginController: UIViewController {
         }
     }
     
+    /**
+     텍스트 필드의 값이 변경될 때 호출되는 메소드
+     
+     로그인 버튼 활성화 여부
+     */
     @objc func handleTextInputChange(){
         let isFormValid = emailTextField.text?.count ?? 0 > 0 &&
         passwordTextField.text?.count ?? 0 > 0

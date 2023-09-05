@@ -9,6 +9,7 @@ import UIKit
 
 class PhotoSelectorCell: UICollectionViewCell {
     
+    //MARK: - Properties
     let photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .lightGray
@@ -17,6 +18,7 @@ class PhotoSelectorCell: UICollectionViewCell {
         return imageView
     }()
     
+    //MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(photoImageView)

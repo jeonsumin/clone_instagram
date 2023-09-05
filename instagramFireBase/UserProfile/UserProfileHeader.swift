@@ -10,6 +10,7 @@ import Firebase
 
 class UserProfileHeader: UICollectionViewCell {
     
+    //MARK: - Properties
     var user: User? {
         didSet {
             guard let profileImageUrl = user?.profileImageUrl else { return }
@@ -18,36 +19,46 @@ class UserProfileHeader: UICollectionViewCell {
             setupEditFollowButton()
         }
     }
-    
+    // 사용자 썸네일
     let profileImageView: CustomImageView = {
         let imageView = CustomImageView()
         imageView.backgroundColor = .lightGray
         return imageView
     }()
     
+    // 그리드 형식 버튼
     let gridButton: UIButton = {
         let button = UIButton(type:.system)
         button.setImage(UIImage(named: "grid"), for: .normal)
         return button
     }()
+    
+    //TODO: 동영상 형식 버튼으로 변경 ( 동영상 리스트 바인딩)
+    // 리스트 형식 버튼
     let listButton: UIButton = {
         let button = UIButton(type:.system)
         button.setImage(UIImage(named: "list"), for: .normal)
         button.tintColor = UIColor(white: 0, alpha: 0.2)
         return button
     }()
+    
+    //북마크 버튼
     let bookmarkButton: UIButton = {
         let button = UIButton(type:.system)
         button.setImage(UIImage(named: "ribbon"), for: .normal)
         button.tintColor = UIColor(white: 0, alpha: 0.2)
         return button
     }()
+    
+    //사용자 이름
     let usernameLabrl: UILabel = {
         let label = UILabel()
         label.text = "username"
         label.font = UIFont.boldSystemFont(ofSize: 14)
         return label
     }()
+    
+    // 게시글 정보
     let postsLabel: UILabel = {
         let label = UILabel()
         
@@ -64,6 +75,8 @@ class UserProfileHeader: UICollectionViewCell {
         
         return label
     }()
+    
+    //팔로워수
     let follwersLabel: UILabel = {
         let label = UILabel()
         let attributedText = NSMutableAttributedString(string: "11\n",attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14)])
@@ -78,6 +91,8 @@ class UserProfileHeader: UICollectionViewCell {
         
         return label
     }()
+    
+    //팔로잉수
     let followingLabel: UILabel = {
         let label = UILabel()
         let attributedText = NSMutableAttributedString(string: "11\n",attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14)])
@@ -93,6 +108,7 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
+    //프로필 편집 / 팔로잉 / 팔로우 버튼
     let editProfileFollowButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("프로필 편집", for: .normal)
@@ -104,6 +120,7 @@ class UserProfileHeader: UICollectionViewCell {
         return button
     }()
     
+    // 프로필 공유하기 버튼
     let sharedProfileButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("프로필 공유", for: .normal)
@@ -115,6 +132,7 @@ class UserProfileHeader: UICollectionViewCell {
     }()
    
     
+    //MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -154,6 +172,14 @@ class UserProfileHeader: UICollectionViewCell {
         setupBottomToolbar()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - Function
+    /**
+     내 게시글 툴바 스택뷰 설정
+     */
     fileprivate func setupBottomToolbar(){
         let stackView = UIStackView(arrangedSubviews: [gridButton,listButton,bookmarkButton])
         
@@ -175,6 +201,9 @@ class UserProfileHeader: UICollectionViewCell {
         
     }
     
+    /**
+     포스트 / 팔로잉 / 팔로우 정보 스텍뷰 설정
+     */
     fileprivate func setupUserStatsView(){
         let stackView = UIStackView(arrangedSubviews: [postsLabel,follwersLabel,followingLabel])
         
@@ -194,6 +223,9 @@ class UserProfileHeader: UICollectionViewCell {
         )
     }
     
+    /**
+     프로필 편집(팔로우/팔로잉) 버튼 , 공유 버튼 스택뷰 설정
+     */
     fileprivate func setupProfileHandleView(){
         
         let stackView = UIStackView(arrangedSubviews: [editProfileFollowButton,sharedProfileButton])
@@ -219,6 +251,9 @@ class UserProfileHeader: UICollectionViewCell {
         
     }
     
+    /**
+     파이어베이스 팔로잉 팔로우 체크
+     */
     fileprivate func setupEditFollowButton(){
         
         guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
@@ -243,12 +278,18 @@ class UserProfileHeader: UICollectionViewCell {
         
     }
     
+    /**
+     팔로우 버튼 스타일 설정
+     */
     fileprivate func setupFollowStyle() {
         self.editProfileFollowButton.setTitle("팔로우", for: .normal)
         self.editProfileFollowButton.backgroundColor = UIColor.rgb(red: 17, green: 154, blue: 237)
         self.editProfileFollowButton.setTitleColor(.white, for: .normal)
     }
     
+    /**
+     팔로잉 버튼 스타일 설정
+     */
     fileprivate func setupFollowingStyle() {
         self.editProfileFollowButton.setTitle("팔로잉", for: .normal)
         self.editProfileFollowButton.backgroundColor = .systemGray5
@@ -256,6 +297,12 @@ class UserProfileHeader: UICollectionViewCell {
         
     }
     
+    //MARK: - Action Selector Methods
+    /**
+     팔로잉 <-> 팔로우 핸들링 메소드
+     
+     파이어베이스 팔로우 저장 및 삭제
+     */
     @objc func handleEditProfileOrFollwow(){
         print("Execute edit profile / follow / unfollow logic ")
         
@@ -263,15 +310,17 @@ class UserProfileHeader: UICollectionViewCell {
         guard let userId = user?.uid else { return }
         
         if editProfileFollowButton.titleLabel?.text == "팔로잉" {
+            //팔로잉 -> 팔로우
             Database.database().reference().child("following/\(currentLoggedInuserId)/\(userId)").removeValue { err, ref in
                 if let err = err {
                     print("Failed to following user : ",err)
                     return
                 }
                 print("Successfully following user: ", self.user?.username ?? "" )
+                
                 self.setupFollowStyle()
             }
-        } else { //팔로우
+        } else { //팔로우 -> 팔로잉
             let ref = Database.database().reference().child("following/\(currentLoggedInuserId)")
             let values = [userId: 1]
             ref.updateChildValues(values) { err, ref in
@@ -282,13 +331,9 @@ class UserProfileHeader: UICollectionViewCell {
                 
                 print("Successfully Followed user: ", self.user?.username ?? "")
                 self.setupFollowingStyle()
-//                setupFollowStyle()
             }
         }
         
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }

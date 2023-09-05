@@ -8,13 +8,17 @@
 import UIKit
 
 class UserProfilePhotoCell: UICollectionViewCell {
+
+    //MARK: - Properties
     
+    //포스트
     var post: Post? {
         didSet {
             guard let imageUrl = post?.imageUrl else { return }
             postImageView.loadImage(urlString: imageUrl)
         }
     }
+    // 포스트 이미지
     let postImageView: CustomImageView = {
         let imageView = CustomImageView()
         imageView.backgroundColor = .gray
@@ -22,6 +26,8 @@ class UserProfilePhotoCell: UICollectionViewCell {
         imageView.clipsToBounds = true
         return imageView
     }()
+    
+    //MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         

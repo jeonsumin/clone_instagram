@@ -9,6 +9,7 @@ import UIKit
 
 class UserSearchCell: UICollectionViewCell {
 
+    //MARK: - Properties
     var user: User? {
         didSet {
             usernameLabel.text = user?.username
@@ -18,6 +19,7 @@ class UserSearchCell: UICollectionViewCell {
         }
     }
     
+    // 프로필 이미지
     let profileImageView: CustomImageView = {
         let imageView = CustomImageView()
         imageView.backgroundColor = .systemGray5
@@ -27,6 +29,7 @@ class UserSearchCell: UICollectionViewCell {
         return imageView
     }()
     
+    // 사용자 이름
     let usernameLabel: UILabel = {
         let label = UILabel()
         label.text = "username"
@@ -34,6 +37,8 @@ class UserSearchCell: UICollectionViewCell {
         
         return label
     }()
+    
+    //MARK: - Init 
     override init(frame: CGRect) {
         super.init(frame: frame)
         [profileImageView,usernameLabel].forEach{

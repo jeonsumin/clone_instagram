@@ -9,24 +9,15 @@ import UIKit
 import Firebase
 
 class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        let index = viewControllers?.index(of: viewController)
-        if index == 2 {
-            let layout = UICollectionViewFlowLayout()
-            let photoSelectContoller = PhotoSelectorController(collectionViewLayout: layout)
-            let navController = UINavigationController(rootViewController: photoSelectContoller)
-            navController.modalPresentationStyle = .fullScreen
-            present(navController, animated: true)
-            return false
-        }
-        return true
-    }
+    
+    //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         
         self.delegate = self
         
+        // 로그인 여부 확인
         if Auth.auth().currentUser == nil {
             DispatchQueue.main.async {
                 let loginController = LoginController()
@@ -41,6 +32,27 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
         setupViewControllers()
         
     }
+    
+    //MARK: - Function
+    /**
+     탭바 아이탬 선택시 활성화 비활성화 메소드
+     */
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        let index = viewControllers?.index(of: viewController)
+        if index == 2 {
+            let layout = UICollectionViewFlowLayout()
+            let photoSelectContoller = PhotoSelectorController(collectionViewLayout: layout)
+            let navController = UINavigationController(rootViewController: photoSelectContoller)
+            navController.modalPresentationStyle = .fullScreen
+            present(navController, animated: true)
+            return false
+        }
+        return true
+    }
+    
+    /**
+     탭바의 아이템 View 설정
+     */
     func setupViewControllers(){
         
         // 홈 탭
@@ -82,6 +94,9 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
         }
     }
     
+    /**
+     네비게이션 뷰컨트롤러 탬플릿 설정
+     */
     fileprivate func templateNavController(unselectedImage: UIImage, selectedImage:UIImage, rootViewController:UIViewController = UIViewController()) -> UINavigationController {
         let viewController = rootViewController
         let navController = UINavigationController(rootViewController: viewController)

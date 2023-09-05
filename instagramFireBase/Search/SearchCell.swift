@@ -8,12 +8,17 @@
 import UIKit
 
 class SearchCell: UICollectionViewCell {
+    
+    //MARK: - Properties
+    // 게시글 데이터
     var posts: Post? {
         didSet{
             guard let urlString = posts?.imageUrl else { return }
             profileImageView.loadImage(urlString: urlString)
         }
     }
+    
+    //프로필 이미지
     let profileImageView: CustomImageView = {
         let imageView = CustomImageView()
         imageView.backgroundColor = .systemGray5
@@ -23,6 +28,7 @@ class SearchCell: UICollectionViewCell {
         return imageView
     }()
     
+    //MARK: - Init 
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(profileImageView)
