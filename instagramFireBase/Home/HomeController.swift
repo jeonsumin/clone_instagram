@@ -174,8 +174,18 @@ extension HomeController: UICollectionViewDelegateFlowLayout {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! HomePostCell
         if posts.count > 0 {
             cell.post = posts[indexPath.item]
+            
         }
+        cell.delegate = self
         
         return cell
+    }
+}
+
+extension HomeController: HomePostCellDelegate {
+    func didTapComment(post: Post) {
+        print(post.cation)
+        let commentController = CommentController(collectionViewLayout: UICollectionViewFlowLayout())
+        present(commentController, animated: true)
     }
 }

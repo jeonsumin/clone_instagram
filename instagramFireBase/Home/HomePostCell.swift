@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol HomePostCellDelegate {
+    func didTapComment(post: Post)
+}
+
 class HomePostCell: UICollectionViewCell {
     //MARK: - Propreties
+    var delegate: HomePostCellDelegate?
+    
     var post: Post? {
         didSet {
             guard let postImageUrl = post?.imageUrl else { return }
@@ -68,9 +74,10 @@ class HomePostCell: UICollectionViewCell {
     }()
     
     // 댓글 버튼
-    let commentButton: UIButton = {
+    lazy var commentButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "comment")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(handleComment), for: .touchUpInside)
         return button
     }()
     
@@ -169,5 +176,11 @@ class HomePostCell: UICollectionViewCell {
         
         addSubview(bookmarkButton)
         bookmarkButton.anchor(top: photoImageView.bottomAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBotton: 0, paddingRight: 0, width: 40, height: 50)
+    }
+    
+    //MARK: - Action Selector Methods
+    @objc func handleComment(){
+        guard let post = self.post else { return }
+        delegate?.didTapComment(post: post )
     }
 }
