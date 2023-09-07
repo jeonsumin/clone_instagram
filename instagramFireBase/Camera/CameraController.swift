@@ -59,7 +59,9 @@ class CameraController: UIViewController{
         previewLayer.frame = view.frame
         view.layer.addSublayer(previewLayer)
         
-        captureSession.startRunning()
+        DispatchQueue.main.async {
+            captureSession.startRunning()
+        }
     }
     
     func setupHUD(){
@@ -70,7 +72,7 @@ class CameraController: UIViewController{
         capturePhotoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         view.addSubview(dismissButton)
-        dismissButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: view.rightAnchor, paddingTop: 12, paddingLeft: 0, paddingBotton: 0, paddingRight: 12, width: 50, height: 50)
+        dismissButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: nil, bottom: nil, right: view.rightAnchor, paddingTop: 12, paddingLeft: 0, paddingBotton: 0, paddingRight: 12, width: 50, height: 50)
     }
     
     //MARK: - Action Selector Methods
@@ -100,10 +102,14 @@ extension CameraController: AVCapturePhotoCaptureDelegate {
         
         let previewImage = UIImage(data: imageData!)
         
-        let previewImageView = UIImageView(image: previewImage)
-        view.addSubview(previewImageView)
-        previewImageView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBotton: 0, paddingRight: 0, width: 0, height: 0)
-        
+        let containerView = PreviewPhotoContainerView()
+        view.addSubview(containerView)
+        containerView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBotton: 0, paddingRight: 0, width: 0, height: 0)
+        containerView.previewImageView.image = previewImage
+//        let previewImageView = UIImageView(image: previewImage)
+//        view.addSubview(previewImageView)
+//        previewImageView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBotton: 0, paddingRight: 0, width: 0, height: 0)
+//
         print("Finish Processing Photo Sample Buffer ... ")
     }
 }
