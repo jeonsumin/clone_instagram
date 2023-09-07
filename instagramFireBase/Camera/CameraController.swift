@@ -8,9 +8,12 @@
 import UIKit
 import AVFoundation
 
-class CameraController: UIViewController{
+class CameraController: UIViewController, UIViewControllerTransitioningDelegate {
     //MARK: - Properties
     let output = AVCapturePhotoOutput()
+    
+    let customAnimationPresentor = CustomAnimationPresentor()
+    let customAnimationDismisser = CustomAnimationDismisser()
     
     let dismissButton: UIButton = {
         let button = UIButton(type: .system)
@@ -28,6 +31,8 @@ class CameraController: UIViewController{
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        transitioningDelegate = self
         
         setupCaptureSession()
         setupHUD()
@@ -73,6 +78,17 @@ class CameraController: UIViewController{
         
         view.addSubview(dismissButton)
         dismissButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: nil, bottom: nil, right: view.rightAnchor, paddingTop: 12, paddingLeft: 0, paddingBotton: 0, paddingRight: 12, width: 50, height: 50)
+    }
+
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        return customAnimationPresentor
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        return customAnimationDismisser
+        
     }
     
     //MARK: - Action Selector Methods
