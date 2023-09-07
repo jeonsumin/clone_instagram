@@ -10,6 +10,7 @@ import AVFoundation
 
 class CameraController: UIViewController{
     //MARK: - Properties
+    let output = AVCapturePhotoOutput()
     
     let dismissButton: UIButton = {
         let button = UIButton(type: .system)
@@ -47,9 +48,8 @@ class CameraController: UIViewController{
         }catch let err {
             print("Could not setup camera input: ", err)
         }
-        // 2. 아웃풋 설정
         
-        let output = AVCapturePhotoOutput()
+        // 2. 아웃풋 설정
         if captureSession.canAddOutput(output){
             captureSession.addOutput(output)
         }
@@ -76,9 +76,34 @@ class CameraController: UIViewController{
     //MARK: - Action Selector Methods
     @objc func handleCapturePhoto(){
         print("Capturing photo ")
+        
+        let settings = AVCapturePhotoSettings()
+        
+        guard let previewFormatType = settings.availablePreviewPhotoPixelFormatTypes.first else { return }
+        settings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewFormatType]
+        
+        output.capturePhoto(with: settings, delegate: self)
     }
+    
+
     
     @objc func handleDismiss(){
         dismiss(animated: true)
+    }
+    
+}
+extension CameraController: AVCapturePhotoCaptureDelegate {
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        
+//        let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: <#T##CMSampleBuffer#>, previewPhotoSampleBuffer: <#T##CMSampleBuffer?#>)
+        let imageData = photo.fileDataRepresentation()
+        
+        let previewImage = UIImage(data: imageData!)
+        
+        let previewImageView = UIImageView(image: previewImage)
+        view.addSubview(previewImageView)
+        previewImageView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBotton: 0, paddingRight: 0, width: 0, height: 0)
+        
+        print("Finish Processing Photo Sample Buffer ... ")
     }
 }
