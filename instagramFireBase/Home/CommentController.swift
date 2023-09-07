@@ -11,11 +11,12 @@ import Firebase
 class CommentController: UICollectionViewController {
     //MARK: - Properties
     var post: Post?
-    
+    var comment = [Comment]()
+    let cellId = "cellId"
     lazy var containerView: UIView = {
         let containerView = UIView()
         containerView.backgroundColor = .white
-        containerView.frame = CGRect(x: 0, y: 0, width: 100, height:50)
+        containerView.frame = CGRect(x: 0, y: 0, width: 100, height:80)
         
         
         let submitButton = UIButton(type: .system)
@@ -53,11 +54,35 @@ class CommentController: UICollectionViewController {
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "댓글"
+        let seperatorView = UIView()
+        seperatorView.backgroundColor = .systemGray4
+        view.addSubview(seperatorView)
+        seperatorView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBotton: 0, paddingRight: 0, width: 0, height: 1)
         
         collectionView.backgroundColor = .white
-//        title = "댓글"
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: -50, right: 0)
+        collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: -50, right: 0)
+        collectionView.register(CommentCell.self,forCellWithReuseIdentifier: cellId)
+        
+        fetchComments()
     }
+    
     //MARK: - Function
+    fileprivate func fetchComments(){
+        guard let postId = self.post?.id else { return }
+        let ref = Database.database().reference().child("comments/\(postId)")
+        ref.observe(.childAdded) { snapshot in
+            
+            guard let dictionary = snapshot.value as? [String: Any] else { return }
+            
+            let comment = Comment(dictionary: dictionary)
+            self.comment.append(comment)
+            self.collectionView.reloadData()
+            print(comment.text, comment.uid)
+            
+        }
+    }
     
     //MARK: - Action Selector Methods
     @objc func handleSubmit(){
@@ -79,5 +104,20 @@ class CommentController: UICollectionViewController {
             
             print("Successfully inserted comment. ")
         }
+    }
+}
+
+extension CommentController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width, height: 50)
+    }
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return comment.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! CommentCell
+        cell.comment = comment[indexPath.item]
+        return cell
     }
 }

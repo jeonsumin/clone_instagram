@@ -186,7 +186,8 @@ extension HomeController: HomePostCellDelegate {
     func didTapComment(post: Post) {
         print(post.cation)
         let commentController = CommentController(collectionViewLayout: UICollectionViewFlowLayout())
+        let navController = UINavigationController(rootViewController: commentController)
         commentController.post = post
-        present(commentController, animated: true)
+        present(navController, animated: true)
     }
 }
