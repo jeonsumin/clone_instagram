@@ -14,6 +14,7 @@ class UserProfileController: UICollectionViewController {
     var user: User?
     let cellId = "cellId"
     let homePostCellId = "homePostCellId"
+    var isFinishingPaging = false
     var posts = [Post]()
     var userId: String?
     var isGridView = true
@@ -52,7 +53,7 @@ class UserProfileController: UICollectionViewController {
             self.collectionView.reloadData()
             
             // 사용자
-            self.fetchOrderPosts()
+            self.paginationPost()
         }
     }
     
@@ -87,6 +88,44 @@ class UserProfileController: UICollectionViewController {
             print("Faild to fetch posts : " ,error )
         }
 
+    }
+    
+    fileprivate func paginationPost(){
+        guard let uid = self.user?.uid else { return }
+        let ref = Database.database().reference().child("posts/\(uid)")
+        
+        var query  = ref.queryOrderedByKey()
+        if posts.count > 0 {
+            let value = posts.last?.id
+            query = query.queryStarting(atValue: value)
+        }
+        query.queryLimited(toFirst: 4).observeSingleEvent(of: .value) { snapshot in
+            guard var allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
+            
+            if allObjects.count < 4 {
+                self.isFinishingPaging = true
+            }
+            
+            if self.posts.count > 0 {
+                allObjects.removeFirst()
+            }
+            
+            guard let user = self.user else { return }
+            allObjects.forEach{ snapshot in
+                guard let dictionary = snapshot.value as? [String:Any] else { return }
+                
+                var post = Post(user: user, dictionary: dictionary)
+                post.id = snapshot.key
+                
+                self.posts.append(post)
+            }
+            
+            self.posts.forEach{ post in
+                print(post.id)
+            }
+            self.collectionView.reloadData()
+        }
+        
     }
     
     //MARK: - Action Selector Methods
@@ -125,6 +164,9 @@ extension UserProfileController:UICollectionViewDelegateFlowLayout {
     
     // 컬렉션 셀의 컨텐트 설정
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.item == self.posts.count - 1 && !isFinishingPaging {
+            paginationPost()
+        }
         if isGridView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
             cell.post = posts[indexPath.item]
