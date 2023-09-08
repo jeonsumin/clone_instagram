@@ -8,9 +8,17 @@
 import UIKit
 import Firebase
 
+protocol UserProfileHeaderDelegate{
+    func didChangeToListView()
+    func didChangeToGridView()
+}
+
 class UserProfileHeader: UICollectionViewCell {
     
     //MARK: - Properties
+    
+    var delegate: UserProfileHeaderDelegate?
+    
     var user: User? {
         didSet {
             guard let profileImageUrl = user?.profileImageUrl else { return }
@@ -27,18 +35,21 @@ class UserProfileHeader: UICollectionViewCell {
     }()
     
     // 그리드 형식 버튼
-    let gridButton: UIButton = {
+    lazy var gridButton: UIButton = {
         let button = UIButton(type:.system)
         button.setImage(UIImage(named: "grid"), for: .normal)
+        button.addTarget(self, action: #selector(handleChangeToGridView), for: .touchUpInside)
         return button
     }()
     
     //TODO: 동영상 형식 버튼으로 변경 ( 동영상 리스트 바인딩)
     // 리스트 형식 버튼
-    let listButton: UIButton = {
+    lazy var listButton: UIButton = {
         let button = UIButton(type:.system)
         button.setImage(UIImage(named: "list"), for: .normal)
         button.tintColor = UIColor(white: 0, alpha: 0.2)
+        button.addTarget(self, action: #selector(handleChangeToListView), for: .touchUpInside)
+        
         return button
     }()
     
@@ -333,7 +344,19 @@ class UserProfileHeader: UICollectionViewCell {
                 self.setupFollowingStyle()
             }
         }
-        
     }
     
+    @objc func handleChangeToListView(){
+        listButton.tintColor = .mainBlue()
+        gridButton.tintColor = UIColor(white: 0, alpha: 0.2)
+        
+        delegate?.didChangeToListView()
+    }
+    
+    @objc func handleChangeToGridView(){
+        gridButton.tintColor = .mainBlue()
+        listButton.tintColor = UIColor(white: 0, alpha: 0.2)
+        
+        delegate?.didChangeToGridView()
+    }
 }

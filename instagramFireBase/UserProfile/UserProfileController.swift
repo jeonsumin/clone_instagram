@@ -8,13 +8,15 @@
 import UIKit
 import Firebase
 
-class UserProfileController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class UserProfileController: UICollectionViewController {
 
     //MARK: - Properties
     var user: User?
     let cellId = "cellId"
+    let homePostCellId = "homePostCellId"
     var posts = [Post]()
     var userId: String?
+    var isGridView = true
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -27,56 +29,12 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         
         //register 채택
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerId")
-        collectionView?.register(UserProfilePhotoCell.self, forCellWithReuseIdentifier: cellId)
         
+        collectionView?.register(UserProfilePhotoCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(HomePostCell.self, forCellWithReuseIdentifier: homePostCellId)
         setupLogOutButton()
 //        fetchOrderPosts()
     }
-    
-    
-    //MARK: - CollectionView Delegate / Datasource / FlowLayout
-    // 컬렉션 셀의 개수 설정
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return posts.count
-    }
-    
-    // 컬렉션 셀의 컨텐트 설정
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
-        cell.post = posts[indexPath.item]
-        return cell
-    }
-    
-    // top / bottom spacing 조정
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 1
-    }
-    
-    //leading / trailing spacing 조정
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 1
-    }
-    
-    //컬랙션 셀의 크기 설정
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = (view.frame.width - 2) / 3
-        return CGSize(width: width, height: width)
-    }
-
-
-    // 컬렉션뷰의 header 설정
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerId", for: indexPath) as! UserProfileHeader
-        header.user = self.user
-        
-        return header
-    }
-    
-    // 컬렉션뷰의 header 크기 설정
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 230)
-    }
-    
     
     //MARK: - Function
     /**
@@ -157,3 +115,79 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         present(alertController, animated: true)
     }
 }
+//MARK: - CollectionView Delegate / Datasource / FlowLayout / headear
+extension UserProfileController:UICollectionViewDelegateFlowLayout {
+    
+    // 컬렉션 셀의 개수 설정
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return posts.count
+    }
+    
+    // 컬렉션 셀의 컨텐트 설정
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if isGridView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
+            cell.post = posts[indexPath.item]
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: homePostCellId, for: indexPath) as! HomePostCell
+            cell.post = posts[indexPath.item]
+            return cell
+        }
+        
+    }
+    
+    // top / bottom spacing 조정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 1
+    }
+    
+    //leading / trailing spacing 조정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 1
+    }
+    
+    //컬랙션 셀의 크기 설정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if isGridView{
+            let width = (view.frame.width - 2) / 3
+            return CGSize(width: width, height: width)
+        } else {
+            var height: CGFloat = 40 + 8 + 8 // 사용자이름 + 유저썸네일 높이
+            height += view.frame.width // 게시글 이미지 높이
+            height += 50 // 좋아요,커멘트,메시지 버튼 섹션
+            height += 60 // 커맨트 섹션
+            
+            return CGSize(width: view.frame.width, height: height)
+        }
+    }
+
+    // 컬렉션뷰의 header 설정
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerId", for: indexPath) as! UserProfileHeader
+        header.user = self.user
+        header.delegate = self
+        return header
+    }
+    
+    // 컬렉션뷰의 header 크기 설정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: view.frame.width, height: 230)
+    }
+    
+}
+
+//MARK: - Grid / list View Delegate
+extension UserProfileController: UserProfileHeaderDelegate {
+    
+    func didChangeToGridView() {
+        isGridView = true
+        collectionView.reloadData()
+    }
+
+    func didChangeToListView() {
+        isGridView = false
+        collectionView.reloadData()
+    }
+}
+ 
