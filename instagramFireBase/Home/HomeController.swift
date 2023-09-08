@@ -85,14 +85,27 @@ class HomeController: UICollectionViewController{
                 
                 var post = Post(user: user, dictionary: dictionary)
                 post.id = key
-                self.posts.append(post)
+                
+                //like Event
+                guard let uid = Auth.auth().currentUser?.uid else { return }
+                Database.database().reference().child("likes/\(key)/\(uid)").observeSingleEvent(of: .value) { snapshot in
+                    print(snapshot)
+                    if let value = snapshot.value as? Int, value == 1 {
+                        post.hasLiked = true
+                    }else {
+                        post.hasLiked = false
+                    }
+                    self.posts.append(post)
+                    // 업로드시간 기준으로 정렬(내림차순)
+                    self.posts.sort { (p1, p2) -> Bool in
+                        return p1.createDate.compare(p2.createDate) == .orderedDescending
+                    }
+                    self.collectionView.reloadData()
+                }
             }
             
-            // 업로드시간 기준으로 정렬(내림차순)
-            self.posts.sort { (p1, p2) -> Bool in
-                return p1.createDate.compare(p2.createDate) == .orderedDescending
-            }
-            self.collectionView.reloadData()
+            
+            
             
         } withCancel: { error in
             print("Faild to fetch posts : " ,error )
@@ -183,6 +196,30 @@ extension HomeController: UICollectionViewDelegateFlowLayout {
 }
 
 extension HomeController: HomePostCellDelegate {
+    func didTapLike(for cell: HomePostCell) {
+        print("hanling like inside for controller ")
+        
+        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        
+        var post = posts[indexPath.item]
+        
+        guard let postId = post.id else { return }
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let values = [uid: post.hasLiked == true ? 0 : 1]
+        Database.database().reference().child("likes/\(postId)").updateChildValues(values) { err, ref in
+            if let err = err {
+                print("Faild to like post ", err)
+                return
+            }
+            
+            print("Successfully save like ")
+            post.hasLiked = !post.hasLiked
+            
+            self.posts[indexPath.item] = post
+            self.collectionView.reloadItems(at: [indexPath])
+        }
+    }
+    
     func didTapComment(post: Post) {
         print(post.cation)
         let commentController = CommentController(collectionViewLayout: UICollectionViewFlowLayout())
@@ -190,4 +227,5 @@ extension HomeController: HomePostCellDelegate {
         commentController.post = post
         present(navController, animated: true)
     }
+    
 }
