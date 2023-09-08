@@ -29,7 +29,11 @@ class CommentController: UICollectionViewController {
         commentTextField.anchor(top: containerView.topAnchor, left: containerView.leftAnchor, bottom: containerView.safeAreaLayoutGuide.bottomAnchor, right: submitButton.leftAnchor, paddingTop: 0, paddingLeft: 12, paddingBotton: 0, paddingRight: 0, width: 0, height: 0)
         
         submitButton.anchor(top: containerView.topAnchor, left: nil, bottom: commentTextField.bottomAnchor, right: containerView.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBotton: 0, paddingRight: 12, width: 50, height: 0)
-        
+    
+        let lineSeperator = UIView()
+        lineSeperator.backgroundColor = UIColor.rgb(red: 230, green: 230, blue: 230)
+        containerView.addSubview(lineSeperator)
+        lineSeperator.anchor(top: containerView.topAnchor, left: containerView.leftAnchor, bottom: nil, right: containerView.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBotton: 0, paddingRight: 0, width: 0, height: 0.5)
     
         return containerView
     }()
@@ -61,6 +65,8 @@ class CommentController: UICollectionViewController {
         seperatorView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBotton: 0, paddingRight: 0, width: 0, height: 1)
         
         collectionView.backgroundColor = .white
+        collectionView.alwaysBounceVertical = true
+        collectionView.keyboardDismissMode = .interactive
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: -50, right: 0)
         collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: -50, right: 0)
         collectionView.register(CommentCell.self,forCellWithReuseIdentifier: cellId)
@@ -75,11 +81,13 @@ class CommentController: UICollectionViewController {
         ref.observe(.childAdded) { snapshot in
             
             guard let dictionary = snapshot.value as? [String: Any] else { return }
+            guard let uid = dictionary["uid"] as? String else { return }
             
-            let comment = Comment(dictionary: dictionary)
-            self.comment.append(comment)
-            self.collectionView.reloadData()
-            print(comment.text, comment.uid)
+            Database.fetchUserWithUID(uid: uid) { user in
+                var comment = Comment(user: user,dictionary: dictionary)
+                self.comment.append(comment)
+                self.collectionView.reloadData()
+            }
             
         }
     }
@@ -109,7 +117,23 @@ class CommentController: UICollectionViewController {
 
 extension CommentController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 50)
+        
+        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+        let dummyCell = CommentCell(frame: frame)
+        
+        dummyCell.comment = comment[indexPath.item]
+        dummyCell.layoutIfNeeded()
+        
+        let targetSize = CGSize(width: view.frame.width, height: 1000)
+        let estimatesSize = dummyCell.systemLayoutSizeFitting(targetSize)
+        
+        let height = max(40 + 8 + 8, estimatesSize.height)
+        
+        return CGSize(width: view.frame.width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return comment.count
