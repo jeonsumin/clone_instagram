@@ -53,7 +53,7 @@ class UserProfileController: UICollectionViewController {
             self.collectionView.reloadData()
             
             // 사용자
-            self.paginationPost()
+            self.fetchOrderPosts()
         }
     }
     
@@ -94,19 +94,24 @@ class UserProfileController: UICollectionViewController {
         guard let uid = self.user?.uid else { return }
         let ref = Database.database().reference().child("posts/\(uid)")
         
-        var query  = ref.queryOrderedByKey()
+//        var query  = ref.queryOrderedByKey()
+        var query = ref.queryOrdered(byChild: "createdDate")
         if posts.count > 0 {
-            let value = posts.last?.id
-            query = query.queryStarting(atValue: value)
+//            let value = posts.last?.id
+            let value = posts.last?.createDate.timeIntervalSince1970
+            query = query.queryEnding(atValue: value)
+            
         }
-        query.queryLimited(toFirst: 4).observeSingleEvent(of: .value) { snapshot in
+        query.queryLimited(toLast: 4).observeSingleEvent(of: .value) { snapshot in
             guard var allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
+            
+            allObjects.reverse()
             
             if allObjects.count < 4 {
                 self.isFinishingPaging = true
             }
             
-            if self.posts.count > 0 {
+            if self.posts.count > 0 && allObjects.count > 0 {
                 allObjects.removeFirst()
             }
             
@@ -119,10 +124,10 @@ class UserProfileController: UICollectionViewController {
                 
                 self.posts.append(post)
             }
-            
-            self.posts.forEach{ post in
-                print(post.id)
+            self.posts.sort { (p1, p2) -> Bool in
+                return p1.createDate.compare(p2.createDate) == .orderedAscending
             }
+            
             self.collectionView.reloadData()
         }
         
@@ -164,9 +169,9 @@ extension UserProfileController:UICollectionViewDelegateFlowLayout {
     
     // 컬렉션 셀의 컨텐트 설정
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.item == self.posts.count - 1 && !isFinishingPaging {
-            paginationPost()
-        }
+//        if indexPath.item == self.posts.count - 1 && !isFinishingPaging {
+//            paginationPost()
+//        }
         if isGridView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
             cell.post = posts[indexPath.item]
